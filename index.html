@@ -26,7 +26,8 @@
         --accent-strong: #0e5438;
         --accent-soft: #dceee5;
         --highlight: #b9572c;
-        --shadow: 0 18px 50px rgb(23 35 30 / 9%);
+        --navy: #244557;
+        --shadow: 0 20px 55px rgb(23 35 30 / 10%);
         --radius: 8px;
       }
 
@@ -44,7 +45,7 @@
         margin: 0;
         color: var(--ink);
         background:
-          linear-gradient(90deg, rgb(255 255 255 / 34%), transparent 28%),
+          linear-gradient(90deg, rgb(255 255 255 / 36%), transparent 30%),
           var(--paper);
         font-family:
           -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
@@ -70,6 +71,10 @@
       iframe:focus-visible {
         outline: 3px solid rgb(23 107 74 / 26%);
         outline-offset: 2px;
+      }
+
+      [hidden] {
+        display: none !important;
       }
 
       .site-header {
@@ -105,10 +110,6 @@
         background: var(--accent);
         font-size: 13px;
         font-weight: 800;
-      }
-
-      .brand-copy {
-        min-width: 0;
       }
 
       .brand-title {
@@ -154,33 +155,81 @@
         height: 17px;
       }
 
-      .workspace {
+      .catalog-shell {
+        width: min(100%, 1440px);
+        margin: 0 auto;
+        padding: 34px clamp(18px, 4vw, 56px) 64px;
+      }
+
+      .catalog-toolbar {
         display: grid;
-        height: calc(100vh - 72px);
-        min-height: 640px;
-        grid-template-columns: minmax(320px, 390px) minmax(0, 1fr);
-      }
-
-      .library {
-        display: flex;
-        min-width: 0;
-        min-height: 0;
-        flex-direction: column;
-        border-right: 1px solid var(--line);
-        background: rgb(255 253 248 / 76%);
-      }
-
-      .library-controls {
-        padding: 22px 20px 18px;
+        grid-template-columns: minmax(260px, 1fr) auto;
+        gap: 18px;
+        align-items: end;
+        padding-bottom: 22px;
         border-bottom: 1px solid var(--line);
+      }
+
+      .catalog-heading {
+        min-width: 0;
+      }
+
+      .catalog-kicker {
+        margin: 0 0 7px;
+        color: var(--accent-strong);
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .catalog-title {
+        margin: 0;
+        font-size: clamp(26px, 4vw, 42px);
+        font-weight: 780;
+        line-height: 1.12;
+      }
+
+      .catalog-summary {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 11px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .catalog-summary strong {
+        color: var(--ink);
+        font-size: 16px;
+      }
+
+      .sync-state {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .sync-state::before {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+        content: "";
+      }
+
+      .catalog-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
 
       .search-field {
         position: relative;
         display: block;
+        width: min(360px, 34vw);
       }
 
-      .search-field svg {
+      .search-field > svg {
         position: absolute;
         top: 50%;
         left: 14px;
@@ -194,7 +243,7 @@
       .search-field input {
         width: 100%;
         height: 46px;
-        padding: 0 42px 0 42px;
+        padding: 0 42px;
         border: 1px solid var(--line-strong);
         border-radius: var(--radius);
         color: var(--ink);
@@ -244,23 +293,32 @@
       }
 
       .search-clear svg {
-        position: static;
         width: 16px;
         height: 16px;
-        transform: none;
       }
 
-      .filter-row {
+      .sort-select {
+        height: 46px;
+        padding: 0 34px 0 13px;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        color: var(--muted);
+        background: var(--surface);
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .filter-bar {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
-        margin-top: 14px;
+        gap: 18px;
+        padding: 18px 0 20px;
       }
 
       .segmented {
         display: inline-flex;
-        min-width: 0;
         padding: 3px;
         border: 1px solid var(--line);
         border-radius: var(--radius);
@@ -268,9 +326,9 @@
       }
 
       .folder-filter {
-        min-width: 54px;
-        height: 31px;
-        padding: 0 10px;
+        min-width: 62px;
+        height: 33px;
+        padding: 0 12px;
         border: 0;
         border-radius: 5px;
         color: var(--muted);
@@ -286,230 +344,242 @@
         box-shadow: 0 1px 4px rgb(23 35 30 / 10%);
       }
 
-      .sort-select {
-        max-width: 108px;
-        height: 38px;
-        padding: 0 28px 0 10px;
-        border: 1px solid transparent;
-        border-radius: 6px;
-        color: var(--muted);
-        background: transparent;
-        font-size: 12px;
-        font-weight: 650;
-        cursor: pointer;
-      }
-
-      .sort-select:hover {
-        background: #eee9df;
-      }
-
-      .library-summary {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 13px 20px;
-        border-bottom: 1px solid var(--line);
+      .result-label {
         color: var(--muted);
         font-size: 12px;
       }
 
-      .library-summary strong {
-        color: var(--ink);
-        font-size: 13px;
-      }
-
-      .sync-state {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .sync-state::before {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: var(--accent);
-        content: "";
-      }
-
-      .document-list {
-        min-height: 0;
-        flex: 1;
-        overflow-y: auto;
-        overscroll-behavior: contain;
-        padding: 8px;
-      }
-
-      .document-item {
+      .document-grid {
         display: grid;
-        width: 100%;
-        grid-template-columns: 42px minmax(0, 1fr) auto;
-        gap: 12px;
-        align-items: center;
-        padding: 13px 12px;
-        border: 1px solid transparent;
+        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+        gap: 16px;
+      }
+
+      .document-card {
+        position: relative;
+        display: flex;
+        min-height: 220px;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 22px;
+        overflow: hidden;
+        border: 1px solid var(--line);
         border-radius: var(--radius);
         color: inherit;
-        background: transparent;
+        background: var(--surface);
         text-align: left;
         cursor: pointer;
         transition:
-          border-color 150ms ease,
-          background 150ms ease,
-          transform 150ms ease;
+          border-color 170ms ease,
+          box-shadow 170ms ease,
+          transform 170ms ease;
       }
 
-      .document-item + .document-item {
-        margin-top: 3px;
+      .document-card::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--highlight);
+        content: "";
       }
 
-      .document-item:hover {
-        border-color: var(--line);
-        background: rgb(255 255 255 / 72%);
+      .document-card[data-folder="pdf"]::before {
+        background: var(--accent);
       }
 
-      .document-item[aria-selected="true"] {
-        border-color: #b9d7c8;
-        background: var(--accent-soft);
+      .document-card[data-folder="others"]::before {
+        background: var(--navy);
+      }
+
+      .document-card:hover {
+        border-color: #b9b3a7;
+        box-shadow: var(--shadow);
+        transform: translateY(-3px);
+      }
+
+      .card-topline {
+        display: flex;
+        width: 100%;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 22px;
       }
 
       .document-icon {
         position: relative;
         display: grid;
-        width: 42px;
-        height: 48px;
+        width: 46px;
+        height: 54px;
         place-items: center;
         border-radius: 6px;
         color: #fff;
         background: var(--highlight);
         font-size: 10px;
         font-weight: 800;
-        letter-spacing: 0;
       }
 
       .document-icon::after {
         position: absolute;
         top: 0;
         right: 0;
-        width: 12px;
-        height: 12px;
+        width: 13px;
+        height: 13px;
         border-bottom-left-radius: 4px;
         background: rgb(255 255 255 / 28%);
         content: "";
       }
 
-      .document-copy {
-        min-width: 0;
+      .folder-badge {
+        max-width: 55%;
+        overflow: hidden;
+        padding: 5px 8px;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        color: var(--muted);
+        background: #f4f1ea;
+        font-size: 10px;
+        font-weight: 750;
+        text-overflow: ellipsis;
+        text-transform: uppercase;
+        white-space: nowrap;
       }
 
       .document-title {
         display: -webkit-box;
+        margin: 0;
         overflow: hidden;
-        color: var(--ink);
-        font-size: 13px;
-        font-weight: 700;
-        line-height: 1.42;
+        font-size: 17px;
+        font-weight: 750;
+        line-height: 1.4;
         overflow-wrap: anywhere;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
       }
 
-      .document-meta {
-        display: flex;
-        min-width: 0;
-        align-items: center;
-        gap: 7px;
-        margin-top: 5px;
+      .document-file {
+        width: 100%;
+        margin: 9px 0 0;
+        overflow: hidden;
         color: var(--muted);
         font-size: 11px;
-      }
-
-      .document-meta span {
-        overflow: hidden;
+        line-height: 1.45;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
 
-      .document-meta span:first-child {
-        flex: 0 0 auto;
-        padding: 2px 6px;
-        border: 1px solid var(--line);
-        border-radius: 4px;
-        background: rgb(255 255 255 / 58%);
-      }
-
-      .document-size {
+      .card-footer {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-top: auto;
+        padding-top: 18px;
         color: var(--muted);
         font-size: 11px;
-        white-space: nowrap;
       }
 
-      .empty-list {
+      .read-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--accent-strong);
+        font-weight: 750;
+      }
+
+      .read-action svg {
+        width: 15px;
+        height: 15px;
+        transition: transform 170ms ease;
+      }
+
+      .document-card:hover .read-action svg {
+        transform: translateX(3px);
+      }
+
+      .empty-state {
+        grid-column: 1 / -1;
         display: grid;
-        min-height: 210px;
+        min-height: 280px;
         place-items: center;
-        padding: 28px;
+        border: 1px dashed var(--line-strong);
+        border-radius: var(--radius);
         color: var(--muted);
         text-align: center;
       }
 
-      .empty-list strong {
+      .empty-state strong {
         display: block;
         margin-bottom: 6px;
         color: var(--ink);
-        font-size: 14px;
+        font-size: 15px;
       }
 
-      .empty-list p {
+      .empty-state p {
         margin: 0;
         font-size: 12px;
-        line-height: 1.6;
       }
 
-      .viewer {
+      .viewer-dialog {
+        width: min(1240px, calc(100vw - 36px));
+        max-width: none;
+        height: min(900px, calc(100dvh - 36px));
+        max-height: none;
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        color: var(--ink);
+        background: var(--surface);
+        box-shadow: 0 28px 90px rgb(12 21 17 / 30%);
+      }
+
+      .viewer-dialog::backdrop {
+        background: rgb(16 24 21 / 66%);
+        backdrop-filter: blur(4px);
+      }
+
+      .viewer-shell {
         display: flex;
-        min-width: 0;
+        height: 100%;
         min-height: 0;
         flex-direction: column;
-        padding: 22px;
       }
 
       .viewer-toolbar {
         display: flex;
-        min-height: 68px;
+        min-height: 74px;
         align-items: center;
         justify-content: space-between;
-        gap: 22px;
-        padding: 0 2px 18px;
+        gap: 20px;
+        padding: 12px 16px 12px 20px;
+        border-bottom: 1px solid var(--line);
+        background: var(--surface);
       }
 
       .viewer-copy {
         min-width: 0;
       }
 
-      .viewer-kicker {
-        margin: 0 0 5px;
-        color: var(--accent-strong);
-        font-size: 11px;
-        font-weight: 800;
-        text-transform: uppercase;
-      }
-
       .viewer-title {
         margin: 0;
-        font-size: clamp(18px, 2vw, 27px);
-        font-weight: 760;
-        line-height: 1.2;
-        overflow-wrap: anywhere;
+        overflow: hidden;
+        font-size: 17px;
+        font-weight: 750;
+        line-height: 1.35;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .viewer-path {
-        margin: 7px 0 0;
+        margin: 4px 0 0;
         overflow: hidden;
         color: var(--muted);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
-        font-size: 11px;
+        font-size: 10px;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
@@ -523,8 +593,8 @@
 
       .action-button {
         display: inline-grid;
-        width: 42px;
-        height: 42px;
+        width: 40px;
+        height: 40px;
         place-items: center;
         border: 1px solid var(--line-strong);
         border-radius: var(--radius);
@@ -546,11 +616,6 @@
         transform: translateY(-1px);
       }
 
-      .action-button[aria-disabled="true"] {
-        opacity: 0.45;
-        pointer-events: none;
-      }
-
       .action-button svg {
         width: 18px;
         height: 18px;
@@ -558,20 +623,16 @@
 
       .viewer-frame {
         position: relative;
-        min-height: 380px;
+        min-height: 0;
         flex: 1;
         overflow: hidden;
-        border: 1px solid var(--line-strong);
-        border-radius: var(--radius);
         background: #e7e3da;
-        box-shadow: var(--shadow);
       }
 
       .viewer-frame iframe {
         display: block;
         width: 100%;
         height: 100%;
-        min-height: 380px;
         border: 0;
         background: #fff;
       }
@@ -608,36 +669,6 @@
         pointer-events: none;
       }
 
-      .viewer-frame.is-empty .viewer-loader {
-        display: none;
-      }
-
-      .viewer-empty {
-        display: grid;
-        height: 100%;
-        min-height: 380px;
-        place-items: center;
-        padding: 36px;
-        color: var(--muted);
-        text-align: center;
-      }
-
-      .viewer-empty strong {
-        display: block;
-        margin-bottom: 6px;
-        color: var(--ink);
-        font-size: 15px;
-      }
-
-      .viewer-empty p {
-        margin: 0;
-        font-size: 12px;
-      }
-
-      [hidden] {
-        display: none !important;
-      }
-
       .sr-only {
         position: absolute;
         width: 1px;
@@ -656,7 +687,7 @@
         }
       }
 
-      @media (max-width: 900px) {
+      @media (max-width: 880px) {
         .site-header {
           min-height: 64px;
           padding: 10px 16px;
@@ -668,10 +699,7 @@
           flex-basis: 38px;
         }
 
-        .brand-subtitle {
-          display: none;
-        }
-
+        .brand-subtitle,
         .repository-link span {
           display: none;
         }
@@ -682,71 +710,62 @@
           padding: 0;
         }
 
-        .workspace {
-          height: auto;
-          min-height: 0;
+        .catalog-shell {
+          padding: 26px 16px 48px;
+        }
+
+        .catalog-toolbar {
           grid-template-columns: 1fr;
+          align-items: stretch;
         }
 
-        .library {
-          max-height: 54vh;
-          border-right: 0;
-          border-bottom: 1px solid var(--line);
-        }
-
-        .library-controls {
-          padding: 16px;
-        }
-
-        .library-summary {
-          padding: 11px 16px;
-        }
-
-        .document-list {
-          padding: 7px;
-        }
-
-        .viewer {
-          min-height: 72vh;
-          padding: 16px;
-        }
-
-        .viewer-toolbar {
-          align-items: flex-start;
-          padding-bottom: 14px;
-        }
-
-        .viewer-title {
-          font-size: 18px;
-        }
-
-        .viewer-frame,
-        .viewer-frame iframe,
-        .viewer-empty {
-          min-height: 64vh;
-        }
-      }
-
-      @media (max-width: 520px) {
-        .filter-row {
+        .catalog-controls {
           align-items: stretch;
           flex-direction: column;
         }
 
-        .segmented {
-          align-self: flex-start;
+        .search-field {
+          width: 100%;
         }
 
         .sort-select {
           width: 100%;
-          max-width: none;
-          border-color: var(--line);
-          background: var(--surface);
+        }
+
+        .filter-bar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .document-grid {
+          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        }
+
+        .viewer-dialog {
+          width: calc(100vw - 16px);
+          height: calc(100dvh - 16px);
+        }
+      }
+
+      @media (max-width: 520px) {
+        .catalog-title {
+          font-size: 28px;
+        }
+
+        .document-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .document-card {
+          min-height: 204px;
         }
 
         .viewer-toolbar {
+          min-height: 108px;
+          align-items: flex-start;
           flex-direction: column;
-          gap: 14px;
+          gap: 10px;
+          padding: 12px;
         }
 
         .viewer-actions {
@@ -774,9 +793,9 @@
     <header class="site-header">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">QK</div>
-        <div class="brand-copy">
+        <div>
           <h1 class="brand-title">青稞 PDF 资料库</h1>
-          <p class="brand-subtitle">集中浏览、预览与下载</p>
+          <p class="brand-subtitle">青稞社区资料索引</p>
         </div>
       </div>
       <a
@@ -801,9 +820,19 @@
       </a>
     </header>
 
-    <main class="workspace">
-      <aside class="library" aria-label="PDF 资料列表">
-        <div class="library-controls">
+    <main class="catalog-shell">
+      <section class="catalog-toolbar" aria-labelledby="catalog-title">
+        <div class="catalog-heading">
+          <p class="catalog-kicker">Document library</p>
+          <h2 class="catalog-title" id="catalog-title">资料目录</h2>
+          <p class="catalog-summary">
+            <strong id="document-count">0</strong>
+            <span>份 PDF</span>
+            <span class="sync-state" id="sync-state">正在同步</span>
+          </p>
+        </div>
+
+        <div class="catalog-controls">
           <label class="search-field" id="search-field">
             <svg
               viewBox="0 0 24 24"
@@ -833,43 +862,46 @@
             </button>
           </label>
 
-          <div class="filter-row">
-            <div class="segmented" aria-label="按文件夹筛选">
-              <button class="folder-filter" type="button" data-folder="all" aria-pressed="true">
-                全部
-              </button>
-              <button class="folder-filter" type="button" data-folder="pdf" aria-pressed="false">
-                PDF
-              </button>
-              <button class="folder-filter" type="button" data-folder="others" aria-pressed="false">
-                其他
-              </button>
-            </div>
-            <label>
-              <span class="sr-only">排序方式</span>
-              <select class="sort-select" id="sort-select">
-                <option value="name">名称排序</option>
-                <option value="size">大小排序</option>
-                <option value="path">路径排序</option>
-              </select>
-            </label>
-          </div>
+          <label>
+            <span class="sr-only">排序方式</span>
+            <select class="sort-select" id="sort-select">
+              <option value="name">名称排序</option>
+              <option value="size">大小排序</option>
+              <option value="path">路径排序</option>
+            </select>
+          </label>
         </div>
+      </section>
 
-        <div class="library-summary">
-          <span><strong id="document-count">0</strong> 份 PDF</span>
-          <span class="sync-state" id="sync-state">正在同步</span>
+      <section class="filter-bar" aria-label="资料筛选">
+        <div class="segmented" aria-label="按文件夹筛选">
+          <button class="folder-filter" type="button" data-folder="all" aria-pressed="true">
+            全部
+          </button>
+          <button class="folder-filter" type="button" data-folder="pdf" aria-pressed="false">
+            PDF
+          </button>
+          <button class="folder-filter" type="button" data-folder="others" aria-pressed="false">
+            其他
+          </button>
         </div>
+        <span class="result-label" id="result-label">0 项结果</span>
+      </section>
 
-        <div class="document-list" id="document-list" role="listbox" aria-label="PDF 文件"></div>
-      </aside>
+      <section
+        class="document-grid"
+        id="document-grid"
+        aria-label="PDF 资料"
+        aria-live="polite"
+      ></section>
+    </main>
 
-      <section class="viewer" aria-label="PDF 预览" id="viewer-section">
+    <dialog class="viewer-dialog" id="viewer-dialog" aria-labelledby="viewer-title">
+      <div class="viewer-shell">
         <div class="viewer-toolbar">
           <div class="viewer-copy">
-            <p class="viewer-kicker">当前文档</p>
-            <h2 class="viewer-title" id="viewer-title">选择一份 PDF</h2>
-            <p class="viewer-path" id="viewer-path">资料将在这里打开</p>
+            <h2 class="viewer-title" id="viewer-title">PDF</h2>
+            <p class="viewer-path" id="viewer-path"></p>
           </div>
           <div class="viewer-actions">
             <a
@@ -880,7 +912,6 @@
               rel="noreferrer"
               aria-label="在新窗口打开"
               title="在新窗口打开"
-              aria-disabled="true"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -903,7 +934,6 @@
               download
               aria-label="下载 PDF"
               title="下载 PDF"
-              aria-disabled="true"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -919,23 +949,35 @@
                 <path d="M12 15V3"></path>
               </svg>
             </a>
+            <button
+              class="action-button"
+              id="close-button"
+              type="button"
+              aria-label="关闭预览"
+              title="关闭预览"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                aria-hidden="true"
+              >
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
           </div>
         </div>
-
-        <div class="viewer-frame is-empty" id="viewer-frame">
+        <div class="viewer-frame" id="viewer-frame">
           <div class="viewer-loader" aria-hidden="true">
             <span>正在载入</span>
           </div>
-          <div class="viewer-empty" id="viewer-empty">
-            <div>
-              <strong>尚未选择文档</strong>
-              <p>从左侧资料列表选择一份 PDF 开始浏览</p>
-            </div>
-          </div>
-          <iframe id="pdf-viewer" title="PDF 预览" hidden></iframe>
+          <iframe id="pdf-viewer" title="PDF 预览"></iframe>
         </div>
-      </section>
-    </main>
+      </div>
+    </dialog>
 
     <script>
       const repository = "qingkelab/ppt";
@@ -993,30 +1035,22 @@
       };
 
       const elements = {
-        documentList: document.querySelector("#document-list"),
+        documentGrid: document.querySelector("#document-grid"),
         documentCount: document.querySelector("#document-count"),
+        resultLabel: document.querySelector("#result-label"),
         syncState: document.querySelector("#sync-state"),
         searchField: document.querySelector("#search-field"),
         searchInput: document.querySelector("#search-input"),
         searchClear: document.querySelector("#search-clear"),
         sortSelect: document.querySelector("#sort-select"),
-        viewerSection: document.querySelector("#viewer-section"),
+        viewerDialog: document.querySelector("#viewer-dialog"),
         viewerFrame: document.querySelector("#viewer-frame"),
-        viewerEmpty: document.querySelector("#viewer-empty"),
         viewerTitle: document.querySelector("#viewer-title"),
         viewerPath: document.querySelector("#viewer-path"),
         pdfViewer: document.querySelector("#pdf-viewer"),
         openButton: document.querySelector("#open-button"),
         downloadButton: document.querySelector("#download-button"),
-      };
-
-      const icons = {
-        clear: `
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" aria-hidden="true">
-            <path d="M18 6 6 18"></path>
-            <path d="m6 6 12 12"></path>
-          </svg>`,
+        closeButton: document.querySelector("#close-button"),
       };
 
       function pathForBrowser(path) {
@@ -1046,6 +1080,15 @@
         }
 
         return `${(bytes / 1024 / 1024).toFixed(bytes >= 10 * 1024 * 1024 ? 0 : 1)} MB`;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
       }
 
       function normalizeDocument(item) {
@@ -1087,15 +1130,16 @@
         });
 
         state.filtered = sortDocuments(filtered);
-        renderDocumentList();
+        renderDocumentGrid();
       }
 
-      function renderDocumentList() {
+      function renderDocumentGrid() {
         elements.documentCount.textContent = String(state.filtered.length);
+        elements.resultLabel.textContent = `${state.filtered.length} 项结果`;
 
         if (!state.filtered.length) {
-          elements.documentList.innerHTML = `
-            <div class="empty-list">
+          elements.documentGrid.innerHTML = `
+            <div class="empty-state">
               <div>
                 <strong>没有匹配的资料</strong>
                 <p>调整搜索内容或文件夹筛选</p>
@@ -1104,81 +1148,80 @@
           return;
         }
 
-        elements.documentList.innerHTML = state.filtered
+        elements.documentGrid.innerHTML = state.filtered
           .map((document) => {
-            const selected = document.path === state.selectedPath;
+            const fileName = document.path.split("/").pop();
             return `
               <button
-                class="document-item"
+                class="document-card"
                 type="button"
-                role="option"
-                aria-selected="${selected}"
                 data-path="${escapeHtml(document.path)}"
+                data-folder="${escapeHtml(document.folder)}"
+                aria-label="查看 ${escapeHtml(document.title)}"
               >
-                <span class="document-icon" aria-hidden="true">PDF</span>
-                <span class="document-copy">
-                  <span class="document-title">${escapeHtml(document.title)}</span>
-                  <span class="document-meta">
-                    <span>${escapeHtml(document.folder)}</span>
-                    <span>${escapeHtml(document.path.split("/").pop())}</span>
+                <span class="card-topline">
+                  <span class="document-icon" aria-hidden="true">PDF</span>
+                  <span class="folder-badge">${escapeHtml(document.folder)}</span>
+                </span>
+                <span class="document-title">${escapeHtml(document.title)}</span>
+                <span class="document-file" title="${escapeHtml(fileName)}">${escapeHtml(fileName)}</span>
+                <span class="card-footer">
+                  <span>${formatSize(document.size)}</span>
+                  <span class="read-action">
+                    查看
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 12h14"></path>
+                      <path d="m13 6 6 6-6 6"></path>
+                    </svg>
                   </span>
                 </span>
-                <span class="document-size">${formatSize(document.size)}</span>
               </button>`;
           })
           .join("");
-      }
-
-      function escapeHtml(value) {
-        return String(value)
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
       }
 
       function findDocument(path) {
         return state.documents.find((document) => document.path === path);
       }
 
-      function selectDocument(path, shouldScroll = true) {
+      function openDocument(path) {
         const document = findDocument(path);
         if (!document) {
           return;
         }
 
         state.selectedPath = path;
-        renderDocumentList();
-
         const browserPath = pathForBrowser(path);
         elements.viewerTitle.textContent = document.title;
         elements.viewerPath.textContent = `${path} · ${formatSize(document.size)}`;
         elements.openButton.href = browserPath;
-        elements.openButton.removeAttribute("aria-disabled");
         elements.downloadButton.href = browserPath;
-        elements.downloadButton.removeAttribute("aria-disabled");
-        elements.viewerEmpty.hidden = true;
-        elements.viewerFrame.classList.remove("is-empty", "is-ready");
-        elements.pdfViewer.hidden = false;
+        elements.viewerFrame.classList.remove("is-ready");
         elements.pdfViewer.src = `${browserPath}#view=FitH`;
-        document.title = `${document.title} | 青稞 PDF 资料库`;
+
+        if (!elements.viewerDialog.open) {
+          elements.viewerDialog.showModal();
+        }
 
         const url = new URL(window.location.href);
         url.searchParams.set("file", path);
         history.replaceState(null, "", url);
+      }
 
-        if (shouldScroll && window.matchMedia("(max-width: 900px)").matches) {
-          elements.viewerSection.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
+      function closeDocument() {
+        elements.viewerDialog.close();
       }
 
       function updateSearchState() {
         elements.searchField.classList.toggle("has-value", Boolean(elements.searchInput.value));
-      }
-
-      function showLoadState(sourceLabel) {
-        elements.syncState.textContent = sourceLabel;
       }
 
       async function loadDocuments() {
@@ -1206,29 +1249,24 @@
           }
 
           state.documents = documents;
-          showLoadState("已同步 GitHub");
+          elements.syncState.textContent = "已同步 GitHub";
         } catch (error) {
           state.documents = fallbackDocuments.map(normalizeDocument);
-          showLoadState("本地索引");
+          elements.syncState.textContent = "本地索引";
           console.warn("GitHub PDF index unavailable, using fallback data.", error);
         }
 
         applyFilters();
         const requestedPath = new URL(window.location.href).searchParams.get("file");
-        const initialPath =
-          requestedPath && findDocument(requestedPath)
-            ? requestedPath
-            : state.filtered[0]?.path || state.documents[0]?.path;
-
-        if (initialPath) {
-          selectDocument(initialPath, false);
+        if (requestedPath && findDocument(requestedPath)) {
+          openDocument(requestedPath);
         }
       }
 
-      elements.documentList.addEventListener("click", (event) => {
-        const item = event.target.closest(".document-item");
-        if (item) {
-          selectDocument(item.dataset.path);
+      elements.documentGrid.addEventListener("click", (event) => {
+        const card = event.target.closest(".document-card");
+        if (card) {
+          openDocument(card.dataset.path);
         }
       });
 
@@ -1268,11 +1306,20 @@
         elements.viewerFrame.classList.add("is-ready");
       });
 
-      window.addEventListener("popstate", () => {
-        const path = new URL(window.location.href).searchParams.get("file");
-        if (path && findDocument(path)) {
-          selectDocument(path, false);
+      elements.closeButton.addEventListener("click", closeDocument);
+
+      elements.viewerDialog.addEventListener("click", (event) => {
+        if (event.target === elements.viewerDialog) {
+          closeDocument();
         }
+      });
+
+      elements.viewerDialog.addEventListener("close", () => {
+        elements.pdfViewer.src = "about:blank";
+        state.selectedPath = "";
+        const url = new URL(window.location.href);
+        url.searchParams.delete("file");
+        history.replaceState(null, "", url);
       });
 
       loadDocuments();
