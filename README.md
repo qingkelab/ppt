@@ -1,3 +1,32 @@
-- [The Ultra-Scale Playbook: Training LLMs on GPU Clusters](https://huggingface.co/spaces/nanotron/ultrascale-playbook?section=high-level_overview) [pdf](./pdf/The_Ultra-Scale_Playbook_Training_LLMs_on_GPU_Clusters.pdf)
+# 青稞 PDF 资料库
 
-- [Machine Learning: LLM/VLM Training and Engineering by Stas Bekman](https://github.com/stas00/ml-engineering/) [pdf](./pdf/ML-Machine-Learning-Engineering.pdf)
+这里用于收集、整理和分享青稞社区相关的 PDF 资料。
+
+## 在线浏览
+
+访问 [青稞 PDF 资料库](https://qingkelab.github.io/ppt/) 可以按文件夹筛选、搜索、在线预览和下载文档。
+
+页面会自动读取仓库中 `pdf/`、`others/` 等目录下的 PDF 文件，新上传的资料无需再次修改页面。
+
+## 目录结构
+
+```text
+.
+├── index.html
+├── pdf/        # 主要 PDF 资料
+└── others/     # 其他补充资料
+```
+
+## 添加 PDF
+
+将 PDF 文件上传到 `pdf/` 或对应分类目录，页面会在下次刷新后自动显示。
+
+建议文件名使用清晰的英文或中文标题，避免特殊字符和多余空格。
+
+## 本地预览
+
+```bash
+python3 -m http.server 8000
+```
+
+然后打开 <http://localhost:8000/>。

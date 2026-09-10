@@ -1,0 +1,1277 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="青稞 PDF 资料库，集中浏览、预览和下载仓库中的 PDF 文档。"
+    />
+    <title>青稞 PDF 资料库</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: #f3f0e9;
+        --surface: #fffdf8;
+        --surface-strong: #ffffff;
+        --ink: #17231e;
+        --muted: #68736d;
+        --line: #d9d5ca;
+        --line-strong: #c8c2b5;
+        --accent: #176b4a;
+        --accent-strong: #0e5438;
+        --accent-soft: #dceee5;
+        --highlight: #b9572c;
+        --shadow: 0 18px 50px rgb(23 35 30 / 9%);
+        --radius: 8px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-width: 320px;
+        background: var(--paper);
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        color: var(--ink);
+        background:
+          linear-gradient(90deg, rgb(255 255 255 / 34%), transparent 28%),
+          var(--paper);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      button:focus-visible,
+      a:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      iframe:focus-visible {
+        outline: 3px solid rgb(23 107 74 / 26%);
+        outline-offset: 2px;
+      }
+
+      .site-header {
+        position: sticky;
+        z-index: 20;
+        top: 0;
+        display: flex;
+        min-height: 72px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 12px clamp(18px, 4vw, 56px);
+        border-bottom: 1px solid var(--line);
+        background: rgb(243 240 233 / 91%);
+        backdrop-filter: blur(14px);
+      }
+
+      .brand {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        place-items: center;
+        border-radius: var(--radius);
+        color: #fff;
+        background: var(--accent);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .brand-copy {
+        min-width: 0;
+      }
+
+      .brand-title {
+        margin: 0;
+        font-size: clamp(18px, 2.1vw, 24px);
+        font-weight: 750;
+        line-height: 1.15;
+      }
+
+      .brand-subtitle {
+        margin: 3px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .repository-link {
+        display: inline-flex;
+        min-height: 40px;
+        align-items: center;
+        gap: 8px;
+        padding: 0 14px;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        color: var(--ink);
+        background: var(--surface);
+        font-size: 13px;
+        font-weight: 650;
+        text-decoration: none;
+        transition:
+          border-color 160ms ease,
+          color 160ms ease,
+          transform 160ms ease;
+      }
+
+      .repository-link:hover {
+        border-color: var(--accent);
+        color: var(--accent-strong);
+        transform: translateY(-1px);
+      }
+
+      .repository-link svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .workspace {
+        display: grid;
+        height: calc(100vh - 72px);
+        min-height: 640px;
+        grid-template-columns: minmax(320px, 390px) minmax(0, 1fr);
+      }
+
+      .library {
+        display: flex;
+        min-width: 0;
+        min-height: 0;
+        flex-direction: column;
+        border-right: 1px solid var(--line);
+        background: rgb(255 253 248 / 76%);
+      }
+
+      .library-controls {
+        padding: 22px 20px 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .search-field {
+        position: relative;
+        display: block;
+      }
+
+      .search-field svg {
+        position: absolute;
+        top: 50%;
+        left: 14px;
+        width: 18px;
+        height: 18px;
+        color: var(--muted);
+        transform: translateY(-50%);
+        pointer-events: none;
+      }
+
+      .search-field input {
+        width: 100%;
+        height: 46px;
+        padding: 0 42px 0 42px;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        color: var(--ink);
+        background: var(--surface-strong);
+        outline: none;
+        transition:
+          border-color 160ms ease,
+          box-shadow 160ms ease;
+      }
+
+      .search-field input::placeholder {
+        color: #87908b;
+      }
+
+      .search-field input::-webkit-search-cancel-button {
+        display: none;
+      }
+
+      .search-field input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgb(23 107 74 / 11%);
+      }
+
+      .search-clear {
+        position: absolute;
+        top: 50%;
+        right: 9px;
+        display: none;
+        width: 30px;
+        height: 30px;
+        place-items: center;
+        border: 0;
+        border-radius: 50%;
+        color: var(--muted);
+        background: transparent;
+        cursor: pointer;
+        transform: translateY(-50%);
+      }
+
+      .search-clear:hover {
+        color: var(--ink);
+        background: #eee9df;
+      }
+
+      .search-field.has-value .search-clear {
+        display: grid;
+      }
+
+      .search-clear svg {
+        position: static;
+        width: 16px;
+        height: 16px;
+        transform: none;
+      }
+
+      .filter-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 14px;
+      }
+
+      .segmented {
+        display: inline-flex;
+        min-width: 0;
+        padding: 3px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #ebe7de;
+      }
+
+      .folder-filter {
+        min-width: 54px;
+        height: 31px;
+        padding: 0 10px;
+        border: 0;
+        border-radius: 5px;
+        color: var(--muted);
+        background: transparent;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .folder-filter[aria-pressed="true"] {
+        color: var(--ink);
+        background: var(--surface-strong);
+        box-shadow: 0 1px 4px rgb(23 35 30 / 10%);
+      }
+
+      .sort-select {
+        max-width: 108px;
+        height: 38px;
+        padding: 0 28px 0 10px;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        color: var(--muted);
+        background: transparent;
+        font-size: 12px;
+        font-weight: 650;
+        cursor: pointer;
+      }
+
+      .sort-select:hover {
+        background: #eee9df;
+      }
+
+      .library-summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 13px 20px;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .library-summary strong {
+        color: var(--ink);
+        font-size: 13px;
+      }
+
+      .sync-state {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .sync-state::before {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+        content: "";
+      }
+
+      .document-list {
+        min-height: 0;
+        flex: 1;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: 8px;
+      }
+
+      .document-item {
+        display: grid;
+        width: 100%;
+        grid-template-columns: 42px minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+        padding: 13px 12px;
+        border: 1px solid transparent;
+        border-radius: var(--radius);
+        color: inherit;
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
+        transition:
+          border-color 150ms ease,
+          background 150ms ease,
+          transform 150ms ease;
+      }
+
+      .document-item + .document-item {
+        margin-top: 3px;
+      }
+
+      .document-item:hover {
+        border-color: var(--line);
+        background: rgb(255 255 255 / 72%);
+      }
+
+      .document-item[aria-selected="true"] {
+        border-color: #b9d7c8;
+        background: var(--accent-soft);
+      }
+
+      .document-icon {
+        position: relative;
+        display: grid;
+        width: 42px;
+        height: 48px;
+        place-items: center;
+        border-radius: 6px;
+        color: #fff;
+        background: var(--highlight);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .document-icon::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 12px;
+        height: 12px;
+        border-bottom-left-radius: 4px;
+        background: rgb(255 255 255 / 28%);
+        content: "";
+      }
+
+      .document-copy {
+        min-width: 0;
+      }
+
+      .document-title {
+        display: -webkit-box;
+        overflow: hidden;
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.42;
+        overflow-wrap: anywhere;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+
+      .document-meta {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 7px;
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .document-meta span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .document-meta span:first-child {
+        flex: 0 0 auto;
+        padding: 2px 6px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: rgb(255 255 255 / 58%);
+      }
+
+      .document-size {
+        color: var(--muted);
+        font-size: 11px;
+        white-space: nowrap;
+      }
+
+      .empty-list {
+        display: grid;
+        min-height: 210px;
+        place-items: center;
+        padding: 28px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .empty-list strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--ink);
+        font-size: 14px;
+      }
+
+      .empty-list p {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .viewer {
+        display: flex;
+        min-width: 0;
+        min-height: 0;
+        flex-direction: column;
+        padding: 22px;
+      }
+
+      .viewer-toolbar {
+        display: flex;
+        min-height: 68px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 22px;
+        padding: 0 2px 18px;
+      }
+
+      .viewer-copy {
+        min-width: 0;
+      }
+
+      .viewer-kicker {
+        margin: 0 0 5px;
+        color: var(--accent-strong);
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .viewer-title {
+        margin: 0;
+        font-size: clamp(18px, 2vw, 27px);
+        font-weight: 760;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+      }
+
+      .viewer-path {
+        margin: 7px 0 0;
+        overflow: hidden;
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+        font-size: 11px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .viewer-actions {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .action-button {
+        display: inline-grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        color: var(--ink);
+        background: var(--surface);
+        cursor: pointer;
+        text-decoration: none;
+        transition:
+          border-color 150ms ease,
+          color 150ms ease,
+          background 150ms ease,
+          transform 150ms ease;
+      }
+
+      .action-button:hover {
+        border-color: var(--accent);
+        color: var(--accent-strong);
+        background: var(--accent-soft);
+        transform: translateY(-1px);
+      }
+
+      .action-button[aria-disabled="true"] {
+        opacity: 0.45;
+        pointer-events: none;
+      }
+
+      .action-button svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .viewer-frame {
+        position: relative;
+        min-height: 380px;
+        flex: 1;
+        overflow: hidden;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        background: #e7e3da;
+        box-shadow: var(--shadow);
+      }
+
+      .viewer-frame iframe {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 380px;
+        border: 0;
+        background: #fff;
+      }
+
+      .viewer-loader {
+        position: absolute;
+        z-index: 2;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        color: var(--muted);
+        background: #f1eee7;
+        font-size: 12px;
+        transition: opacity 180ms ease;
+      }
+
+      .viewer-loader::before {
+        width: 28px;
+        height: 28px;
+        border: 3px solid #d6d1c7;
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 700ms linear infinite;
+        content: "";
+      }
+
+      .viewer-loader span {
+        position: absolute;
+        margin-top: 58px;
+      }
+
+      .viewer-frame.is-ready .viewer-loader {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .viewer-frame.is-empty .viewer-loader {
+        display: none;
+      }
+
+      .viewer-empty {
+        display: grid;
+        height: 100%;
+        min-height: 380px;
+        place-items: center;
+        padding: 36px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .viewer-empty strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--ink);
+        font-size: 15px;
+      }
+
+      .viewer-empty p {
+        margin: 0;
+        font-size: 12px;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+        white-space: nowrap;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 900px) {
+        .site-header {
+          min-height: 64px;
+          padding: 10px 16px;
+        }
+
+        .brand-mark {
+          width: 38px;
+          height: 38px;
+          flex-basis: 38px;
+        }
+
+        .brand-subtitle {
+          display: none;
+        }
+
+        .repository-link span {
+          display: none;
+        }
+
+        .repository-link {
+          width: 40px;
+          justify-content: center;
+          padding: 0;
+        }
+
+        .workspace {
+          height: auto;
+          min-height: 0;
+          grid-template-columns: 1fr;
+        }
+
+        .library {
+          max-height: 54vh;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .library-controls {
+          padding: 16px;
+        }
+
+        .library-summary {
+          padding: 11px 16px;
+        }
+
+        .document-list {
+          padding: 7px;
+        }
+
+        .viewer {
+          min-height: 72vh;
+          padding: 16px;
+        }
+
+        .viewer-toolbar {
+          align-items: flex-start;
+          padding-bottom: 14px;
+        }
+
+        .viewer-title {
+          font-size: 18px;
+        }
+
+        .viewer-frame,
+        .viewer-frame iframe,
+        .viewer-empty {
+          min-height: 64vh;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .filter-row {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .segmented {
+          align-self: flex-start;
+        }
+
+        .sort-select {
+          width: 100%;
+          max-width: none;
+          border-color: var(--line);
+          background: var(--surface);
+        }
+
+        .viewer-toolbar {
+          flex-direction: column;
+          gap: 14px;
+        }
+
+        .viewer-actions {
+          width: 100%;
+        }
+
+        .action-button {
+          flex: 1;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">QK</div>
+        <div class="brand-copy">
+          <h1 class="brand-title">青稞 PDF 资料库</h1>
+          <p class="brand-subtitle">集中浏览、预览与下载</p>
+        </div>
+      </div>
+      <a
+        class="repository-link"
+        href="https://github.com/qingkelab/ppt"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.3-.4 6.8-1.6 6.8-7.4a5.8 5.8 0 0 0-1.6-4 5.4 5.4 0 0 0-.1-4S17.8-1.2 15 1a13.4 13.4 0 0 0-7 0C5.2-1.2 3.9-.9 3.9-.9a5.4 5.4 0 0 0-.1 4A5.8 5.8 0 0 0 2.2 7c0 5.8 3.5 7 6.8 7.4A4.8 4.8 0 0 0 8 18v4"></path>
+          <path d="M8 19c-3 .9-3-1.5-4-2"></path>
+        </svg>
+        <span>GitHub</span>
+      </a>
+    </header>
+
+    <main class="workspace">
+      <aside class="library" aria-label="PDF 资料列表">
+        <div class="library-controls">
+          <label class="search-field" id="search-field">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+            <span class="sr-only">搜索 PDF</span>
+            <input id="search-input" type="search" placeholder="搜索 PDF" autocomplete="off" />
+            <button class="search-clear" id="search-clear" type="button" aria-label="清空搜索">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                aria-hidden="true"
+              >
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </label>
+
+          <div class="filter-row">
+            <div class="segmented" aria-label="按文件夹筛选">
+              <button class="folder-filter" type="button" data-folder="all" aria-pressed="true">
+                全部
+              </button>
+              <button class="folder-filter" type="button" data-folder="pdf" aria-pressed="false">
+                PDF
+              </button>
+              <button class="folder-filter" type="button" data-folder="others" aria-pressed="false">
+                其他
+              </button>
+            </div>
+            <label>
+              <span class="sr-only">排序方式</span>
+              <select class="sort-select" id="sort-select">
+                <option value="name">名称排序</option>
+                <option value="size">大小排序</option>
+                <option value="path">路径排序</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="library-summary">
+          <span><strong id="document-count">0</strong> 份 PDF</span>
+          <span class="sync-state" id="sync-state">正在同步</span>
+        </div>
+
+        <div class="document-list" id="document-list" role="listbox" aria-label="PDF 文件"></div>
+      </aside>
+
+      <section class="viewer" aria-label="PDF 预览" id="viewer-section">
+        <div class="viewer-toolbar">
+          <div class="viewer-copy">
+            <p class="viewer-kicker">Current document</p>
+            <h2 class="viewer-title" id="viewer-title">选择一份 PDF</h2>
+            <p class="viewer-path" id="viewer-path">资料将在这里打开</p>
+          </div>
+          <div class="viewer-actions">
+            <a
+              class="action-button"
+              id="open-button"
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="在新窗口打开"
+              title="在新窗口打开"
+              aria-disabled="true"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M15 3h6v6"></path>
+                <path d="M10 14 21 3"></path>
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              </svg>
+            </a>
+            <a
+              class="action-button"
+              id="download-button"
+              href="#"
+              download
+              aria-label="下载 PDF"
+              title="下载 PDF"
+              aria-disabled="true"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <path d="m7 10 5 5 5-5"></path>
+                <path d="M12 15V3"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="viewer-frame is-empty" id="viewer-frame">
+          <div class="viewer-loader" aria-live="polite">
+            <span>正在载入</span>
+          </div>
+          <div class="viewer-empty" id="viewer-empty">
+            <div>
+              <strong>尚未选择文档</strong>
+              <p>从左侧资料列表选择一份 PDF 开始浏览</p>
+            </div>
+          </div>
+          <iframe id="pdf-viewer" title="PDF 预览" hidden></iframe>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const repository = "qingkelab/ppt";
+      const apiUrl = `https://api.github.com/repos/${repository}/git/trees/main?recursive=1`;
+      const fallbackDocuments = [
+        {
+          path: "pdf/The_Ultra-Scale_Playbook_Training_LLMs_on_GPU_Clusters.pdf",
+          size: 14059172,
+        },
+        {
+          path: "pdf/ML-Machine-Learning-Engineering.pdf",
+          size: 9303619,
+        },
+        {
+          path: "pdf/Understanding_Attention_Handbook_01.pdf",
+          size: 538180,
+        },
+        {
+          path: "pdf/Understanding_KV_Cache_Handbook_02.pdf",
+          size: 462678,
+        },
+        {
+          path: "others/中文-oai_gpt-oss_model_card.pdf",
+          size: 8471498,
+        },
+      ];
+
+      const knownTitles = new Map([
+        [
+          "pdf/The_Ultra-Scale_Playbook_Training_LLMs_on_GPU_Clusters.pdf",
+          "The Ultra-Scale Playbook: Training LLMs on GPU Clusters",
+        ],
+        [
+          "pdf/ML-Machine-Learning-Engineering.pdf",
+          "Machine Learning: LLM/VLM Training and Engineering",
+        ],
+        [
+          "pdf/Understanding_Attention_Handbook_01.pdf",
+          "Understanding Attention Handbook 01",
+        ],
+        [
+          "pdf/Understanding_KV_Cache_Handbook_02.pdf",
+          "Understanding KV Cache Handbook 02",
+        ],
+        ["others/中文-oai_gpt-oss_model_card.pdf", "OpenAI GPT-OSS 模型卡（中文）"],
+      ]);
+
+      const state = {
+        documents: [],
+        filtered: [],
+        selectedPath: "",
+        folder: "all",
+        query: "",
+        sort: "name",
+      };
+
+      const elements = {
+        documentList: document.querySelector("#document-list"),
+        documentCount: document.querySelector("#document-count"),
+        syncState: document.querySelector("#sync-state"),
+        searchField: document.querySelector("#search-field"),
+        searchInput: document.querySelector("#search-input"),
+        searchClear: document.querySelector("#search-clear"),
+        sortSelect: document.querySelector("#sort-select"),
+        viewerSection: document.querySelector("#viewer-section"),
+        viewerFrame: document.querySelector("#viewer-frame"),
+        viewerEmpty: document.querySelector("#viewer-empty"),
+        viewerTitle: document.querySelector("#viewer-title"),
+        viewerPath: document.querySelector("#viewer-path"),
+        pdfViewer: document.querySelector("#pdf-viewer"),
+        openButton: document.querySelector("#open-button"),
+        downloadButton: document.querySelector("#download-button"),
+      };
+
+      const icons = {
+        clear: `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" aria-hidden="true">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>`,
+      };
+
+      function pathForBrowser(path) {
+        return path.split("/").map(encodeURIComponent).join("/");
+      }
+
+      function fileTitle(path) {
+        if (knownTitles.has(path)) {
+          return knownTitles.get(path);
+        }
+
+        const name = path.split("/").pop().replace(/\.pdf$/i, "");
+        return name.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+      }
+
+      function fileFolder(path) {
+        return path.includes("/") ? path.split("/")[0] : "root";
+      }
+
+      function formatSize(bytes) {
+        if (!Number.isFinite(bytes) || bytes <= 0) {
+          return "PDF";
+        }
+
+        if (bytes < 1024 * 1024) {
+          return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+        }
+
+        return `${(bytes / 1024 / 1024).toFixed(bytes >= 10 * 1024 * 1024 ? 0 : 1)} MB`;
+      }
+
+      function normalizeDocument(item) {
+        return {
+          path: item.path,
+          size: item.size,
+          title: fileTitle(item.path),
+          folder: fileFolder(item.path),
+          searchText: `${fileTitle(item.path)} ${item.path}`.toLocaleLowerCase("zh-CN"),
+        };
+      }
+
+      function sortDocuments(documents) {
+        const collator = new Intl.Collator("zh-CN", {
+          numeric: true,
+          sensitivity: "base",
+        });
+
+        return [...documents].sort((a, b) => {
+          if (state.sort === "size") {
+            return b.size - a.size;
+          }
+
+          if (state.sort === "path") {
+            return collator.compare(a.path, b.path);
+          }
+
+          return collator.compare(a.title, b.title);
+        });
+      }
+
+      function applyFilters() {
+        const query = state.query.trim().toLocaleLowerCase("zh-CN");
+        const filtered = state.documents.filter((document) => {
+          const folderMatches =
+            state.folder === "all" || document.folder === state.folder;
+
+          return folderMatches && (!query || document.searchText.includes(query));
+        });
+
+        state.filtered = sortDocuments(filtered);
+        renderDocumentList();
+      }
+
+      function renderDocumentList() {
+        elements.documentCount.textContent = String(state.filtered.length);
+
+        if (!state.filtered.length) {
+          elements.documentList.innerHTML = `
+            <div class="empty-list">
+              <div>
+                <strong>没有匹配的资料</strong>
+                <p>调整搜索内容或文件夹筛选</p>
+              </div>
+            </div>`;
+          return;
+        }
+
+        elements.documentList.innerHTML = state.filtered
+          .map((document) => {
+            const selected = document.path === state.selectedPath;
+            return `
+              <button
+                class="document-item"
+                type="button"
+                role="option"
+                aria-selected="${selected}"
+                data-path="${escapeHtml(document.path)}"
+              >
+                <span class="document-icon" aria-hidden="true">PDF</span>
+                <span class="document-copy">
+                  <span class="document-title">${escapeHtml(document.title)}</span>
+                  <span class="document-meta">
+                    <span>${escapeHtml(document.folder)}</span>
+                    <span>${escapeHtml(document.path.split("/").pop())}</span>
+                  </span>
+                </span>
+                <span class="document-size">${formatSize(document.size)}</span>
+              </button>`;
+          })
+          .join("");
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function findDocument(path) {
+        return state.documents.find((document) => document.path === path);
+      }
+
+      function selectDocument(path, shouldScroll = true) {
+        const document = findDocument(path);
+        if (!document) {
+          return;
+        }
+
+        state.selectedPath = path;
+        renderDocumentList();
+
+        const browserPath = pathForBrowser(path);
+        elements.viewerTitle.textContent = document.title;
+        elements.viewerPath.textContent = `${path} · ${formatSize(document.size)}`;
+        elements.openButton.href = browserPath;
+        elements.openButton.removeAttribute("aria-disabled");
+        elements.downloadButton.href = browserPath;
+        elements.downloadButton.removeAttribute("aria-disabled");
+        elements.viewerEmpty.hidden = true;
+        elements.viewerFrame.classList.remove("is-empty", "is-ready");
+        elements.pdfViewer.hidden = false;
+        elements.pdfViewer.src = `${browserPath}#view=FitH`;
+        document.title = `${document.title} | 青稞 PDF 资料库`;
+
+        const url = new URL(window.location.href);
+        url.searchParams.set("file", path);
+        history.replaceState(null, "", url);
+
+        if (shouldScroll && window.matchMedia("(max-width: 900px)").matches) {
+          elements.viewerSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+
+      function updateSearchState() {
+        elements.searchField.classList.toggle("has-value", Boolean(elements.searchInput.value));
+      }
+
+      function showLoadState(sourceLabel) {
+        elements.syncState.textContent = sourceLabel;
+      }
+
+      async function loadDocuments() {
+        try {
+          const response = await fetch(apiUrl, {
+            headers: { Accept: "application/vnd.github+json" },
+          });
+
+          if (!response.ok) {
+            throw new Error(`GitHub API ${response.status}`);
+          }
+
+          const payload = await response.json();
+          const documents = payload.tree
+            .filter(
+              (item) =>
+                item.type === "blob" &&
+                item.path.toLowerCase().endsWith(".pdf") &&
+                !item.path.split("/").some((part) => part.startsWith(".")),
+            )
+            .map(normalizeDocument);
+
+          if (!documents.length) {
+            throw new Error("No PDF documents found");
+          }
+
+          state.documents = documents;
+          showLoadState("已同步 GitHub");
+        } catch (error) {
+          state.documents = fallbackDocuments.map(normalizeDocument);
+          showLoadState("本地索引");
+          console.warn("GitHub PDF index unavailable, using fallback data.", error);
+        }
+
+        applyFilters();
+        const requestedPath = new URL(window.location.href).searchParams.get("file");
+        const initialPath =
+          requestedPath && findDocument(requestedPath)
+            ? requestedPath
+            : state.filtered[0]?.path || state.documents[0]?.path;
+
+        if (initialPath) {
+          selectDocument(initialPath, false);
+        }
+      }
+
+      elements.documentList.addEventListener("click", (event) => {
+        const item = event.target.closest(".document-item");
+        if (item) {
+          selectDocument(item.dataset.path);
+        }
+      });
+
+      elements.searchInput.addEventListener("input", () => {
+        state.query = elements.searchInput.value;
+        updateSearchState();
+        applyFilters();
+      });
+
+      elements.searchClear.addEventListener("click", () => {
+        elements.searchInput.value = "";
+        state.query = "";
+        updateSearchState();
+        applyFilters();
+        elements.searchInput.focus();
+      });
+
+      document.querySelectorAll(".folder-filter").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.folder = button.dataset.folder;
+          document.querySelectorAll(".folder-filter").forEach((candidate) => {
+            candidate.setAttribute(
+              "aria-pressed",
+              String(candidate.dataset.folder === state.folder),
+            );
+          });
+          applyFilters();
+        });
+      });
+
+      elements.sortSelect.addEventListener("change", () => {
+        state.sort = elements.sortSelect.value;
+        applyFilters();
+      });
+
+      elements.pdfViewer.addEventListener("load", () => {
+        elements.viewerFrame.classList.add("is-ready");
+      });
+
+      window.addEventListener("popstate", () => {
+        const path = new URL(window.location.href).searchParams.get("file");
+        if (path && findDocument(path)) {
+          selectDocument(path, false);
+        }
+      });
+
+      loadDocuments();
+    </script>
+  </body>
+</html>
