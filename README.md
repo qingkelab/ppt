@@ -18,7 +18,6 @@
 │   │   ├── llm-infra/  # LLM Infra Meetup
 │   │   └── rl-infra/   # RL Infra Meetup
 │   └── */               # 其他 PDF 资料
-└── others/              # 其他补充资料
 ```
 
 ## 添加 PDF
