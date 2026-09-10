@@ -4,7 +4,7 @@
 
 ## 在线浏览
 
-访问 [青稞 PDF 资料库](https://qingkelab.github.io/ppt/) 可以按文件夹筛选、搜索、在线预览和下载文档。
+访问 [青稞 PDF 资料库](https://qingkelab.github.io/ppt/) 可以按分类筛选、搜索、在线预览和下载文档。
 
 页面会自动读取仓库中 `pdf/`、`others/` 等目录下的 PDF 文件，新上传的资料无需再次修改页面。
 
@@ -14,9 +14,11 @@
 .
 ├── index.html
 ├── pdf/
-│   ├── qingketea/  # 青稞Tea 活动资料
-│   └── */           # 其他 PDF 资料
-└── others/          # 其他补充资料
+│   ├── meetup/
+│   │   ├── llm-infra/  # LLM Infra Meetup
+│   │   └── rl-infra/   # RL Infra Meetup
+│   └── */               # 其他 PDF 资料
+└── others/              # 其他补充资料
 ```
 
 ## 添加 PDF

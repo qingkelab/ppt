@@ -319,6 +319,7 @@
 
       .segmented {
         display: inline-flex;
+        flex-wrap: wrap;
         padding: 3px;
         border: 1px solid var(--line);
         border-radius: var(--radius);
@@ -385,12 +386,16 @@
         content: "";
       }
 
-      .document-card[data-folder="pdf"]::before {
+      .document-card[data-folder="LLM Infra Meetup"]::before {
         background: var(--accent);
       }
 
-      .document-card[data-folder="others"]::before {
+      .document-card[data-folder="RL Infra Meetup"]::before {
         background: var(--navy);
+      }
+
+      .document-card[data-folder="其他资料"]::before {
+        background: var(--highlight);
       }
 
       .document-card:hover {
@@ -874,15 +879,33 @@
       </section>
 
       <section class="filter-bar" aria-label="资料筛选">
-        <div class="segmented" aria-label="按文件夹筛选">
+        <div class="segmented" aria-label="按分类筛选">
           <button class="folder-filter" type="button" data-folder="all" aria-pressed="true">
             全部
           </button>
-          <button class="folder-filter" type="button" data-folder="pdf" aria-pressed="false">
-            PDF
+          <button
+            class="folder-filter"
+            type="button"
+            data-folder="LLM Infra Meetup"
+            aria-pressed="false"
+          >
+            LLM Infra Meetup
           </button>
-          <button class="folder-filter" type="button" data-folder="others" aria-pressed="false">
-            其他
+          <button
+            class="folder-filter"
+            type="button"
+            data-folder="RL Infra Meetup"
+            aria-pressed="false"
+          >
+            RL Infra Meetup
+          </button>
+          <button
+            class="folder-filter"
+            type="button"
+            data-folder="其他资料"
+            aria-pressed="false"
+          >
+            其他资料
           </button>
         </div>
         <span class="result-label" id="result-label">0 项结果</span>
@@ -1067,7 +1090,15 @@
       }
 
       function fileFolder(path) {
-        return path.includes("/") ? path.split("/")[0] : "root";
+        if (path.startsWith("pdf/meetup/llm-infra/")) {
+          return "LLM Infra Meetup";
+        }
+
+        if (path.startsWith("pdf/meetup/rl-infra/")) {
+          return "RL Infra Meetup";
+        }
+
+        return "其他资料";
       }
 
       function formatSize(bytes) {
