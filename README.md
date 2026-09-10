@@ -13,8 +13,10 @@
 ```text
 .
 ├── index.html
-├── pdf/        # 主要 PDF 资料
-└── others/     # 其他补充资料
+├── pdf/
+│   ├── qingketea/  # 青稞Tea 活动资料
+│   └── */           # 其他 PDF 资料
+└── others/          # 其他补充资料
 ```
 
 ## 添加 PDF
