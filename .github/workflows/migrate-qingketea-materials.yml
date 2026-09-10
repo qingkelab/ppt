@@ -1,0 +1,96 @@
+name: Migrate QingkeTea materials
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ppt
+        uses: actions/checkout@v4
+
+      - name: Download QingkeTea materials on GitHub runner
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p pdf/qingketea/20250824 pdf/qingketea/20250713
+
+          download_pdf() {
+            local url="$1"
+            local destination="$2"
+
+            echo "Fetching ${destination}"
+            curl --fail --location --retry 5 --retry-delay 3 \
+              --output "${destination}" "${url}"
+
+            if ! file "${destination}" | grep -qi "PDF"; then
+              echo "Not a PDF: ${destination}" >&2
+              exit 1
+            fi
+          }
+
+          download_pdf \
+            "http://qingkeai.online/upload/pdf/20250824/verl.pdf" \
+            "pdf/qingketea/20250824/verl.pdf"
+          download_pdf \
+            "http://qingkeai.online/upload/pdf/20250824/ROLL.pdf" \
+            "pdf/qingketea/20250824/ROLL.pdf"
+          download_pdf \
+            "http://qingkeai.online/upload/pdf/20250824/Entropy.pdf" \
+            "pdf/qingketea/20250824/Entropy.pdf"
+          download_pdf \
+            "http://qingkeai.online/upload/pdf/20250824/echo.pdf" \
+            "pdf/qingketea/20250824/echo.pdf"
+          download_pdf \
+            "http://qingkeai.online/upload/pdf/20250824/AReaL.pdf" \
+            "pdf/qingketea/20250824/AReaL.pdf"
+          download_pdf \
+            "http://qingkeai.online/upload/pdf/20250824/RLite.pdf" \
+            "pdf/qingketea/20250824/RLite.pdf"
+          download_pdf \
+            "http://qingkeai.online/upload/pdf/20250824/OpenRLHF.pdf" \
+            "pdf/qingketea/20250824/OpenRLHF.pdf"
+          download_pdf \
+            "https://docs.google.com/presentation/d/1JRhB1d7csofx0PIZBmfyBdMluxNd5JLPpUHrrvVhGnk/export/pdf" \
+            "pdf/qingketea/20250824/OpenRLHF-slides.pdf"
+
+          download_pdf \
+            "http://qingkeai.online/upload/pdf/20250713/KTransformers.pdf" \
+            "pdf/qingketea/20250713/KTransformers.pdf"
+          download_pdf \
+            "http://qingkeai.online/upload/pdf/20250713/LightLLM.pdf" \
+            "pdf/qingketea/20250713/LightLLM.pdf"
+          download_pdf \
+            "http://qingkeai.online/upload/pdf/20250713/vllm.pdf" \
+            "pdf/qingketea/20250713/vllm.pdf"
+          download_pdf \
+            "http://qingkeai.online/upload/pdf/20250713/Ritual.pdf" \
+            "pdf/qingketea/20250713/Ritual.pdf"
+          download_pdf \
+            "http://qingkeai.online/upload/pdf/20250713/TRTLLM.pdf" \
+            "pdf/qingketea/20250713/TRTLLM.pdf"
+          download_pdf \
+            "http://qingkeai.online/upload/pdf/20250713/SGLang.pdf" \
+            "pdf/qingketea/20250713/SGLang.pdf"
+
+      - name: Commit migrated materials
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pdf/qingketea
+
+          if git diff --cached --quiet; then
+            echo "No new materials to commit."
+            exit 0
+          fi
+
+          git commit -m "content: migrate QingkeTea materials"
+          git push
