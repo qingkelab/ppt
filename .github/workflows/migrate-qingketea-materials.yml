@@ -9,9 +9,10 @@ permissions:
 jobs:
   migrate:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout ppt
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Download QingkeTea materials on GitHub runner
         shell: bash
@@ -20,63 +21,49 @@ jobs:
 
           mkdir -p pdf/qingketea/20250824 pdf/qingketea/20250713
 
-          download_pdf() {
-            local url="$1"
-            local destination="$2"
+          curl \
+            --fail \
+            --location \
+            --retry 5 \
+            --retry-delay 3 \
+            --retry-all-errors \
+            --connect-timeout 15 \
+            --max-time 300 \
+            --parallel \
+            --parallel-max 4 \
+            --output "pdf/qingketea/20250824/verl.pdf" \
+            "https://qingkeai.online/upload/pdf/20250824/verl.pdf" \
+            --output "pdf/qingketea/20250824/ROLL.pdf" \
+            "https://qingkeai.online/upload/pdf/20250824/ROLL.pdf" \
+            --output "pdf/qingketea/20250824/Entropy.pdf" \
+            "https://qingkeai.online/upload/pdf/20250824/Entropy.pdf" \
+            --output "pdf/qingketea/20250824/echo.pdf" \
+            "https://qingkeai.online/upload/pdf/20250824/echo.pdf" \
+            --output "pdf/qingketea/20250824/AReaL.pdf" \
+            "https://qingkeai.online/upload/pdf/20250824/AReaL.pdf" \
+            --output "pdf/qingketea/20250824/RLite.pdf" \
+            "https://qingkeai.online/upload/pdf/20250824/RLite.pdf" \
+            --output "pdf/qingketea/20250824/OpenRLHF.pdf" \
+            "https://qingkeai.online/upload/pdf/20250824/OpenRLHF.pdf" \
+            --output "pdf/qingketea/20250713/KTransformers.pdf" \
+            "https://qingkeai.online/upload/pdf/20250713/KTransformers.pdf" \
+            --output "pdf/qingketea/20250713/LightLLM.pdf" \
+            "https://qingkeai.online/upload/pdf/20250713/LightLLM.pdf" \
+            --output "pdf/qingketea/20250713/vllm.pdf" \
+            "https://qingkeai.online/upload/pdf/20250713/vllm.pdf" \
+            --output "pdf/qingketea/20250713/Ritual.pdf" \
+            "https://qingkeai.online/upload/pdf/20250713/Ritual.pdf" \
+            --output "pdf/qingketea/20250713/TRTLLM.pdf" \
+            "https://qingkeai.online/upload/pdf/20250713/TRTLLM.pdf" \
+            --output "pdf/qingketea/20250713/SGLang.pdf" \
+            "https://qingkeai.online/upload/pdf/20250713/SGLang.pdf"
 
-            echo "Fetching ${destination}"
-            curl --fail --location --retry 5 --retry-delay 3 \
-              --output "${destination}" "${url}"
-
-            if ! file "${destination}" | grep -qi "PDF"; then
-              echo "Not a PDF: ${destination}" >&2
+          while IFS= read -r document; do
+            if ! file "${document}" | grep -qi "PDF"; then
+              echo "Not a PDF: ${document}" >&2
               exit 1
             fi
-          }
-
-          download_pdf \
-            "http://qingkeai.online/upload/pdf/20250824/verl.pdf" \
-            "pdf/qingketea/20250824/verl.pdf"
-          download_pdf \
-            "http://qingkeai.online/upload/pdf/20250824/ROLL.pdf" \
-            "pdf/qingketea/20250824/ROLL.pdf"
-          download_pdf \
-            "http://qingkeai.online/upload/pdf/20250824/Entropy.pdf" \
-            "pdf/qingketea/20250824/Entropy.pdf"
-          download_pdf \
-            "http://qingkeai.online/upload/pdf/20250824/echo.pdf" \
-            "pdf/qingketea/20250824/echo.pdf"
-          download_pdf \
-            "http://qingkeai.online/upload/pdf/20250824/AReaL.pdf" \
-            "pdf/qingketea/20250824/AReaL.pdf"
-          download_pdf \
-            "http://qingkeai.online/upload/pdf/20250824/RLite.pdf" \
-            "pdf/qingketea/20250824/RLite.pdf"
-          download_pdf \
-            "http://qingkeai.online/upload/pdf/20250824/OpenRLHF.pdf" \
-            "pdf/qingketea/20250824/OpenRLHF.pdf"
-          download_pdf \
-            "https://docs.google.com/presentation/d/1JRhB1d7csofx0PIZBmfyBdMluxNd5JLPpUHrrvVhGnk/export/pdf" \
-            "pdf/qingketea/20250824/OpenRLHF-slides.pdf"
-
-          download_pdf \
-            "http://qingkeai.online/upload/pdf/20250713/KTransformers.pdf" \
-            "pdf/qingketea/20250713/KTransformers.pdf"
-          download_pdf \
-            "http://qingkeai.online/upload/pdf/20250713/LightLLM.pdf" \
-            "pdf/qingketea/20250713/LightLLM.pdf"
-          download_pdf \
-            "http://qingkeai.online/upload/pdf/20250713/vllm.pdf" \
-            "pdf/qingketea/20250713/vllm.pdf"
-          download_pdf \
-            "http://qingkeai.online/upload/pdf/20250713/Ritual.pdf" \
-            "pdf/qingketea/20250713/Ritual.pdf"
-          download_pdf \
-            "http://qingkeai.online/upload/pdf/20250713/TRTLLM.pdf" \
-            "pdf/qingketea/20250713/TRTLLM.pdf"
-          download_pdf \
-            "http://qingkeai.online/upload/pdf/20250713/SGLang.pdf" \
-            "pdf/qingketea/20250713/SGLang.pdf"
+          done < <(find pdf/qingketea -type f -name '*.pdf' -print)
 
       - name: Commit migrated materials
         shell: bash
