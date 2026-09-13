@@ -4,7 +4,9 @@
 
 ## 在线浏览
 
-访问 [青稞 PDF 资料库](https://qingkelab.github.io/ppt/) 可以按技术主题筛选、搜索、在线预览和下载文档。
+访问 [青稞 PDF 资料库](https://qingkelab.github.io/ppt/) 可以按主题筛选、搜索、在线预览和下载文档。
+
+Meetup 资料保留 `LLM Infra Meetup` 和 `RL Infra Meetup` 两个原有分类，其他资料按技术主题标签筛选。
 
 页面会自动读取仓库中 `pdf/` 等目录下的 PDF 文件，新上传的资料无需再次修改页面。
 
@@ -28,4 +30,4 @@
 
 ## 外部资料
 
-无需复制文件到本仓库。可以在 `index.html` 的 `externalDocuments` 中登记原始 PDF 地址，外部资料同样按技术主题标签筛选。
+无需复制文件到本仓库。可以在 `index.html` 的 `externalDocuments` 中登记原始 PDF 地址，外部资料同样按主题标签筛选。

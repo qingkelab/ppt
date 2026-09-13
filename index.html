@@ -899,15 +899,28 @@
       </section>
 
       <section class="filter-bar" aria-label="资料筛选">
-        <div class="segmented" aria-label="按技术主题筛选">
+        <div class="segmented" aria-label="按主题筛选">
           <button class="topic-filter" type="button" data-topic="all" aria-pressed="true">
             全部
           </button>
+          <button
+            class="topic-filter"
+            type="button"
+            data-topic="LLM Infra Meetup"
+            aria-pressed="false"
+          >
+            LLM Infra Meetup
+          </button>
+          <button
+            class="topic-filter"
+            type="button"
+            data-topic="RL Infra Meetup"
+            aria-pressed="false"
+          >
+            RL Infra Meetup
+          </button>
           <button class="topic-filter" type="button" data-topic="LLM Infra" aria-pressed="false">
             LLM Infra
-          </button>
-          <button class="topic-filter" type="button" data-topic="RL" aria-pressed="false">
-            RL
           </button>
           <button class="topic-filter" type="button" data-topic="Agent" aria-pressed="false">
             Agent
@@ -1136,19 +1149,6 @@
       ]);
 
       const topicTags = new Map([
-        ["pdf/meetup/llm-infra/KTransformers.pdf", ["LLM Infra", "Inference"]],
-        ["pdf/meetup/llm-infra/LightLLM.pdf", ["LLM Infra", "Inference"]],
-        ["pdf/meetup/llm-infra/Ritual.pdf", ["LLM Infra", "Distributed"]],
-        ["pdf/meetup/llm-infra/SGLang.pdf", ["LLM Infra", "Inference"]],
-        ["pdf/meetup/llm-infra/TRTLLM.pdf", ["LLM Infra", "Inference"]],
-        ["pdf/meetup/llm-infra/vllm.pdf", ["LLM Infra", "Inference"]],
-        ["pdf/meetup/rl-infra/AReaL.pdf", ["RL", "Training", "Distributed"]],
-        ["pdf/meetup/rl-infra/echo.pdf", ["RL", "Training", "Distributed"]],
-        ["pdf/meetup/rl-infra/Entropy.pdf", ["RL", "Training"]],
-        ["pdf/meetup/rl-infra/OpenRLHF.pdf", ["RL", "Training"]],
-        ["pdf/meetup/rl-infra/RLite.pdf", ["RL", "Training"]],
-        ["pdf/meetup/rl-infra/ROLL.pdf", ["RL", "Training", "Distributed"]],
-        ["pdf/meetup/rl-infra/verl.pdf", ["RL", "Training", "Distributed"]],
         [
           "pdf/The_Ultra-Scale_Playbook_Training_LLMs_on_GPU_Clusters.pdf",
           ["LLM", "Training", "Distributed"],
@@ -1223,16 +1223,16 @@
       }
 
       function documentTopics(path) {
-        if (topicTags.has(path)) {
-          return topicTags.get(path);
-        }
-
         if (path.startsWith("pdf/meetup/llm-infra/")) {
-          return ["LLM Infra"];
+          return ["LLM Infra Meetup"];
         }
 
         if (path.startsWith("pdf/meetup/rl-infra/")) {
-          return ["RL"];
+          return ["RL Infra Meetup"];
+        }
+
+        if (topicTags.has(path)) {
+          return topicTags.get(path);
         }
 
         return [];
