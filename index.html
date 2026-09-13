@@ -922,26 +922,16 @@
           <button class="topic-filter" type="button" data-topic="LLM Infra" aria-pressed="false">
             LLM Infra
           </button>
+          <button
+            class="topic-filter"
+            type="button"
+            data-topic="Training &amp; Inference"
+            aria-pressed="false"
+          >
+            Training &amp; Inference
+          </button>
           <button class="topic-filter" type="button" data-topic="Agent" aria-pressed="false">
             Agent
-          </button>
-          <button class="topic-filter" type="button" data-topic="LLM" aria-pressed="false">
-            LLM
-          </button>
-          <button class="topic-filter" type="button" data-topic="Training" aria-pressed="false">
-            Training
-          </button>
-          <button class="topic-filter" type="button" data-topic="Inference" aria-pressed="false">
-            Inference
-          </button>
-          <button class="topic-filter" type="button" data-topic="Distributed" aria-pressed="false">
-            Distributed
-          </button>
-          <button class="topic-filter" type="button" data-topic="Attention" aria-pressed="false">
-            Attention
-          </button>
-          <button class="topic-filter" type="button" data-topic="KV Cache" aria-pressed="false">
-            KV Cache
           </button>
           <button
             class="topic-filter"
@@ -950,9 +940,6 @@
             aria-pressed="false"
           >
             Model Architecture
-          </button>
-          <button class="topic-filter" type="button" data-topic="World Model" aria-pressed="false">
-            World Model
           </button>
         </div>
         <span class="result-label" id="result-label">0 项结果</span>
@@ -1151,33 +1138,36 @@
       const topicTags = new Map([
         [
           "pdf/The_Ultra-Scale_Playbook_Training_LLMs_on_GPU_Clusters.pdf",
-          ["LLM", "Training", "Distributed"],
+          ["LLM Infra", "Training & Inference"],
         ],
         [
           "pdf/ML-Machine-Learning-Engineering.pdf",
-          ["LLM", "Training", "Inference"],
+          ["LLM Infra", "Training & Inference"],
         ],
         [
           "pdf/Understanding_Attention_Handbook_01.pdf",
-          ["Attention", "Model Architecture"],
+          ["Model Architecture"],
         ],
-        ["pdf/Understanding_KV_Cache_Handbook_02.pdf", ["LLM Infra", "KV Cache", "Inference"]],
+        [
+          "pdf/Understanding_KV_Cache_Handbook_02.pdf",
+          ["LLM Infra", "Training & Inference"],
+        ],
         [
           "pdf/中文-oai_gpt-oss_model_card.pdf",
-          ["LLM", "Model Architecture"],
+          ["Model Architecture"],
         ],
         [
           "external/Purshow_Notes/Beyond_Residual_CN.pdf",
-          ["Model Architecture", "Training"],
+          ["Model Architecture"],
         ],
         [
           "external/ai-infra-book/AI-Infra-Book.pdf",
-          ["LLM Infra", "Training", "Inference", "Distributed"],
+          ["LLM Infra", "Training & Inference"],
         ],
-        ["external/Purshow_Notes/WAM_CN.pdf", ["Agent", "World Model"]],
+        ["external/Purshow_Notes/WAM_CN.pdf", ["Agent"]],
         [
           "external/ai-agent-book/AI-Agents-in-Depth-zh-CN.pdf",
-          ["Agent", "LLM"],
+          ["Agent"],
         ],
       ]);
 

@@ -6,7 +6,7 @@
 
 访问 [青稞 PDF 资料库](https://qingkelab.github.io/ppt/) 可以按主题筛选、搜索、在线预览和下载文档。
 
-Meetup 资料保留 `LLM Infra Meetup` 和 `RL Infra Meetup` 两个原有分类，其他资料按技术主题标签筛选。
+Meetup 资料保留 `LLM Infra Meetup` 和 `RL Infra Meetup` 两个原有分类；其他资料使用 `LLM Infra`、`Training & Inference`、`Agent`、`Model Architecture` 四个技术主题标签。
 
 页面会自动读取仓库中 `pdf/` 等目录下的 PDF 文件，新上传的资料无需再次修改页面。
 
