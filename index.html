@@ -332,7 +332,7 @@
         background: #ebe7de;
       }
 
-      .folder-filter {
+      .topic-filter {
         min-width: 62px;
         height: 33px;
         padding: 0 12px;
@@ -345,7 +345,7 @@
         cursor: pointer;
       }
 
-      .folder-filter[aria-pressed="true"] {
+      .topic-filter[aria-pressed="true"] {
         color: var(--ink);
         background: var(--surface-strong);
         box-shadow: 0 1px 4px rgb(23 35 30 / 10%);
@@ -392,22 +392,6 @@
         content: "";
       }
 
-      .document-card[data-folder="LLM Infra Meetup"]::before {
-        background: var(--accent);
-      }
-
-      .document-card[data-folder="RL Infra Meetup"]::before {
-        background: var(--navy);
-      }
-
-      .document-card[data-folder="其他资料"]::before {
-        background: var(--highlight);
-      }
-
-      .document-card[data-folder="外部资料"]::before {
-        background: #16807a;
-      }
-
       .document-card:hover {
         border-color: #b9b3a7;
         box-shadow: var(--shadow);
@@ -447,19 +431,23 @@
         content: "";
       }
 
-      .folder-badge {
-        max-width: 55%;
-        overflow: hidden;
-        padding: 5px 8px;
+      .card-tags {
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 12px;
+      }
+
+      .topic-badge {
+        padding: 4px 7px;
         border: 1px solid var(--line);
         border-radius: 5px;
-        color: var(--muted);
-        background: #f4f1ea;
+        color: var(--accent-strong);
+        background: var(--accent-soft);
         font-size: 10px;
         font-weight: 750;
-        text-overflow: ellipsis;
-        text-transform: uppercase;
-        white-space: nowrap;
+        line-height: 1.2;
       }
 
       .document-title {
@@ -911,41 +899,47 @@
       </section>
 
       <section class="filter-bar" aria-label="资料筛选">
-        <div class="segmented" aria-label="按分类筛选">
-          <button class="folder-filter" type="button" data-folder="all" aria-pressed="true">
+        <div class="segmented" aria-label="按技术主题筛选">
+          <button class="topic-filter" type="button" data-topic="all" aria-pressed="true">
             全部
           </button>
-          <button
-            class="folder-filter"
-            type="button"
-            data-folder="LLM Infra Meetup"
-            aria-pressed="false"
-          >
-            LLM Infra Meetup
+          <button class="topic-filter" type="button" data-topic="LLM Infra" aria-pressed="false">
+            LLM Infra
+          </button>
+          <button class="topic-filter" type="button" data-topic="RL" aria-pressed="false">
+            RL
+          </button>
+          <button class="topic-filter" type="button" data-topic="Agent" aria-pressed="false">
+            Agent
+          </button>
+          <button class="topic-filter" type="button" data-topic="LLM" aria-pressed="false">
+            LLM
+          </button>
+          <button class="topic-filter" type="button" data-topic="Training" aria-pressed="false">
+            Training
+          </button>
+          <button class="topic-filter" type="button" data-topic="Inference" aria-pressed="false">
+            Inference
+          </button>
+          <button class="topic-filter" type="button" data-topic="Distributed" aria-pressed="false">
+            Distributed
+          </button>
+          <button class="topic-filter" type="button" data-topic="Attention" aria-pressed="false">
+            Attention
+          </button>
+          <button class="topic-filter" type="button" data-topic="KV Cache" aria-pressed="false">
+            KV Cache
           </button>
           <button
-            class="folder-filter"
+            class="topic-filter"
             type="button"
-            data-folder="RL Infra Meetup"
+            data-topic="Model Architecture"
             aria-pressed="false"
           >
-            RL Infra Meetup
+            Model Architecture
           </button>
-          <button
-            class="folder-filter"
-            type="button"
-            data-folder="其他资料"
-            aria-pressed="false"
-          >
-            其他资料
-          </button>
-          <button
-            class="folder-filter"
-            type="button"
-            data-folder="外部资料"
-            aria-pressed="false"
-          >
-            外部资料
+          <button class="topic-filter" type="button" data-topic="World Model" aria-pressed="false">
+            World Model
           </button>
         </div>
         <span class="result-label" id="result-label">0 项结果</span>
@@ -1073,7 +1067,6 @@
           path: "external/Purshow_Notes/Beyond_Residual_CN.pdf",
           size: 2361697,
           title: "Beyond Residual（中文版）",
-          folder: "外部资料",
           sourceLabel: "Purshow/Purshow_Notes · Beyond_Residual/CN/Beyond_Residual_CN.pdf",
           sourceUrl:
             "https://github.com/Purshow/Purshow_Notes/blob/main/Beyond_Residual/CN/Beyond_Residual_CN.pdf",
@@ -1089,7 +1082,6 @@
           path: "external/ai-infra-book/AI-Infra-Book.pdf",
           size: 7991178,
           title: "深入理解 AI Infra：量化分析与系统设计",
-          folder: "外部资料",
           sourceLabel: "bojieli/ai-infra-book · AI-Infra-Book.pdf",
           sourceUrl: "https://github.com/bojieli/ai-infra-book/releases/latest",
           downloadUrl:
@@ -1100,7 +1092,6 @@
           path: "external/Purshow_Notes/WAM_CN.pdf",
           size: 8940425,
           title: "WAM（中文版）",
-          folder: "外部资料",
           sourceLabel: "Purshow/Purshow_Notes · WAM/CN/WAM_CN.pdf",
           sourceUrl:
             "https://github.com/Purshow/Purshow_Notes/blob/main/WAM/CN/WAM_CN.pdf",
@@ -1116,7 +1107,6 @@
           path: "external/ai-agent-book/AI-Agents-in-Depth-zh-CN.pdf",
           size: 11063163,
           title: "深入理解 AI Agent：设计原理与工程实践",
-          folder: "外部资料",
           sourceLabel: "bojieli/ai-agent-book · AI-Agents-in-Depth-zh-CN.pdf",
           sourceUrl: "https://github.com/bojieli/ai-agent-book/releases/tag/latest",
           downloadUrl:
@@ -1145,11 +1135,57 @@
         ["pdf/中文-oai_gpt-oss_model_card.pdf", "OpenAI GPT-OSS 模型卡（中文）"],
       ]);
 
+      const topicTags = new Map([
+        ["pdf/meetup/llm-infra/KTransformers.pdf", ["LLM Infra", "Inference"]],
+        ["pdf/meetup/llm-infra/LightLLM.pdf", ["LLM Infra", "Inference"]],
+        ["pdf/meetup/llm-infra/Ritual.pdf", ["LLM Infra", "Distributed"]],
+        ["pdf/meetup/llm-infra/SGLang.pdf", ["LLM Infra", "Inference"]],
+        ["pdf/meetup/llm-infra/TRTLLM.pdf", ["LLM Infra", "Inference"]],
+        ["pdf/meetup/llm-infra/vllm.pdf", ["LLM Infra", "Inference"]],
+        ["pdf/meetup/rl-infra/AReaL.pdf", ["RL", "Training", "Distributed"]],
+        ["pdf/meetup/rl-infra/echo.pdf", ["RL", "Training", "Distributed"]],
+        ["pdf/meetup/rl-infra/Entropy.pdf", ["RL", "Training"]],
+        ["pdf/meetup/rl-infra/OpenRLHF.pdf", ["RL", "Training"]],
+        ["pdf/meetup/rl-infra/RLite.pdf", ["RL", "Training"]],
+        ["pdf/meetup/rl-infra/ROLL.pdf", ["RL", "Training", "Distributed"]],
+        ["pdf/meetup/rl-infra/verl.pdf", ["RL", "Training", "Distributed"]],
+        [
+          "pdf/The_Ultra-Scale_Playbook_Training_LLMs_on_GPU_Clusters.pdf",
+          ["LLM", "Training", "Distributed"],
+        ],
+        [
+          "pdf/ML-Machine-Learning-Engineering.pdf",
+          ["LLM", "Training", "Inference"],
+        ],
+        [
+          "pdf/Understanding_Attention_Handbook_01.pdf",
+          ["Attention", "Model Architecture"],
+        ],
+        ["pdf/Understanding_KV_Cache_Handbook_02.pdf", ["KV Cache", "Inference"]],
+        [
+          "pdf/中文-oai_gpt-oss_model_card.pdf",
+          ["LLM", "Model Architecture"],
+        ],
+        [
+          "external/Purshow_Notes/Beyond_Residual_CN.pdf",
+          ["Model Architecture", "Training"],
+        ],
+        [
+          "external/ai-infra-book/AI-Infra-Book.pdf",
+          ["LLM Infra", "Training", "Inference", "Distributed"],
+        ],
+        ["external/Purshow_Notes/WAM_CN.pdf", ["Agent", "World Model"]],
+        [
+          "external/ai-agent-book/AI-Agents-in-Depth-zh-CN.pdf",
+          ["Agent", "LLM"],
+        ],
+      ]);
+
       const state = {
         documents: [],
         filtered: [],
         selectedPath: "",
-        folder: "all",
+        topic: "all",
         query: "",
         sort: "name",
       };
@@ -1186,16 +1222,20 @@
         return name.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
       }
 
-      function fileFolder(path) {
+      function documentTopics(path) {
+        if (topicTags.has(path)) {
+          return topicTags.get(path);
+        }
+
         if (path.startsWith("pdf/meetup/llm-infra/")) {
-          return "LLM Infra Meetup";
+          return ["LLM Infra"];
         }
 
         if (path.startsWith("pdf/meetup/rl-infra/")) {
-          return "RL Infra Meetup";
+          return ["RL"];
         }
 
-        return "其他资料";
+        return [];
       }
 
       function formatSize(bytes) {
@@ -1221,16 +1261,17 @@
 
       function normalizeDocument(item) {
         const title = item.title || fileTitle(item.path);
+        const tags = item.tags || documentTopics(item.path);
         return {
           path: item.path,
           size: item.size,
           title,
-          folder: item.folder || fileFolder(item.path),
+          tags,
           downloadUrl: item.downloadUrl || "",
           viewerUrl: item.viewerUrl || "",
           sourceUrl: item.sourceUrl || "",
           sourceLabel: item.sourceLabel || item.path,
-          searchText: `${title} ${item.path}`.toLocaleLowerCase("zh-CN"),
+          searchText: `${title} ${item.path} ${tags.join(" ")}`.toLocaleLowerCase("zh-CN"),
         };
       }
 
@@ -1256,10 +1297,10 @@
       function applyFilters() {
         const query = state.query.trim().toLocaleLowerCase("zh-CN");
         const filtered = state.documents.filter((document) => {
-          const folderMatches =
-            state.folder === "all" || document.folder === state.folder;
+          const topicMatches =
+            state.topic === "all" || document.tags.includes(state.topic);
 
-          return folderMatches && (!query || document.searchText.includes(query));
+          return topicMatches && (!query || document.searchText.includes(query));
         });
 
         state.filtered = sortDocuments(filtered);
@@ -1275,7 +1316,7 @@
             <div class="empty-state">
               <div>
                 <strong>没有匹配的资料</strong>
-                <p>调整搜索内容或文件夹筛选</p>
+                <p>调整搜索内容或技术主题</p>
               </div>
             </div>`;
           return;
@@ -1284,20 +1325,22 @@
         elements.documentGrid.innerHTML = state.filtered
           .map((document) => {
             const fileName = document.path.split("/").pop();
+            const tags = document.tags
+              .map((tag) => `<span class="topic-badge">${escapeHtml(tag)}</span>`)
+              .join("");
             return `
               <button
                 class="document-card"
                 type="button"
                 data-path="${escapeHtml(document.path)}"
-                data-folder="${escapeHtml(document.folder)}"
                 aria-label="查看 ${escapeHtml(document.title)}"
               >
                 <span class="card-topline">
                   <span class="document-icon" aria-hidden="true">PDF</span>
-                  <span class="folder-badge">${escapeHtml(document.folder)}</span>
                 </span>
                 <span class="document-title">${escapeHtml(document.title)}</span>
                 <span class="document-file" title="${escapeHtml(fileName)}">${escapeHtml(fileName)}</span>
+                <span class="card-tags" aria-label="技术主题">${tags}</span>
                 <span class="card-footer">
                   <span>${formatSize(document.size)}</span>
                   <span class="read-action">
@@ -1425,13 +1468,13 @@
         elements.searchInput.focus();
       });
 
-      document.querySelectorAll(".folder-filter").forEach((button) => {
+      document.querySelectorAll(".topic-filter").forEach((button) => {
         button.addEventListener("click", () => {
-          state.folder = button.dataset.folder;
-          document.querySelectorAll(".folder-filter").forEach((candidate) => {
+          state.topic = button.dataset.topic;
+          document.querySelectorAll(".topic-filter").forEach((candidate) => {
             candidate.setAttribute(
               "aria-pressed",
-              String(candidate.dataset.folder === state.folder),
+              String(candidate.dataset.topic === state.topic),
             );
           });
           applyFilters();
