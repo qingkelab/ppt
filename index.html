@@ -404,6 +404,10 @@
         background: var(--highlight);
       }
 
+      .document-card[data-folder="外部资料"]::before {
+        background: #16807a;
+      }
+
       .document-card:hover {
         border-color: #b9b3a7;
         box-shadow: var(--shadow);
@@ -935,6 +939,14 @@
           >
             其他资料
           </button>
+          <button
+            class="folder-filter"
+            type="button"
+            data-folder="外部资料"
+            aria-pressed="false"
+          >
+            外部资料
+          </button>
         </div>
         <span class="result-label" id="result-label">0 项结果</span>
       </section>
@@ -1051,8 +1063,27 @@
           size: 462678,
         },
         {
-          path: "others/中文-oai_gpt-oss_model_card.pdf",
+          path: "pdf/中文-oai_gpt-oss_model_card.pdf",
           size: 8471498,
+        },
+      ];
+
+      const externalDocuments = [
+        {
+          path: "external/Purshow_Notes/Beyond_Residual_CN.pdf",
+          size: 2361697,
+          title: "Beyond Residual（中文版）",
+          folder: "外部资料",
+          sourceLabel: "Purshow/Purshow_Notes · Beyond_Residual/CN/Beyond_Residual_CN.pdf",
+          sourceUrl:
+            "https://github.com/Purshow/Purshow_Notes/blob/main/Beyond_Residual/CN/Beyond_Residual_CN.pdf",
+          downloadUrl:
+            "https://raw.githubusercontent.com/Purshow/Purshow_Notes/main/Beyond_Residual/CN/Beyond_Residual_CN.pdf",
+          viewerUrl:
+            "https://mozilla.github.io/pdf.js/web/viewer.html?file=" +
+            encodeURIComponent(
+              "https://raw.githubusercontent.com/Purshow/Purshow_Notes/main/Beyond_Residual/CN/Beyond_Residual_CN.pdf",
+            ),
         },
       ];
 
@@ -1073,7 +1104,7 @@
           "pdf/Understanding_KV_Cache_Handbook_02.pdf",
           "Understanding KV Cache Handbook 02",
         ],
-        ["others/中文-oai_gpt-oss_model_card.pdf", "OpenAI GPT-OSS 模型卡（中文）"],
+        ["pdf/中文-oai_gpt-oss_model_card.pdf", "OpenAI GPT-OSS 模型卡（中文）"],
       ]);
 
       const state = {
@@ -1151,12 +1182,17 @@
       }
 
       function normalizeDocument(item) {
+        const title = item.title || fileTitle(item.path);
         return {
           path: item.path,
           size: item.size,
-          title: fileTitle(item.path),
-          folder: fileFolder(item.path),
-          searchText: `${fileTitle(item.path)} ${item.path}`.toLocaleLowerCase("zh-CN"),
+          title,
+          folder: item.folder || fileFolder(item.path),
+          downloadUrl: item.downloadUrl || "",
+          viewerUrl: item.viewerUrl || "",
+          sourceUrl: item.sourceUrl || "",
+          sourceLabel: item.sourceLabel || item.path,
+          searchText: `${title} ${item.path}`.toLocaleLowerCase("zh-CN"),
         };
       }
 
@@ -1258,13 +1294,15 @@
         }
 
         state.selectedPath = path;
-        const browserPath = pathForBrowser(path);
+        const documentUrl = document.downloadUrl || pathForBrowser(path);
         elements.viewerTitle.textContent = document.title;
-        elements.viewerPath.textContent = `${path} · ${formatSize(document.size)}`;
-        elements.openButton.href = browserPath;
-        elements.downloadButton.href = browserPath;
+        elements.viewerPath.textContent =
+          `${document.sourceLabel} · ${formatSize(document.size)}`;
+        elements.openButton.href = document.sourceUrl || documentUrl;
+        elements.downloadButton.href = documentUrl;
         elements.viewerFrame.classList.remove("is-ready");
-        elements.pdfViewer.src = `${browserPath}#view=FitH`;
+        elements.pdfViewer.src =
+          document.viewerUrl || `${documentUrl}#view=FitH`;
 
         if (!elements.viewerDialog.open) {
           elements.viewerDialog.showModal();
@@ -1307,10 +1345,16 @@
             throw new Error("No PDF documents found");
           }
 
-          state.documents = documents;
+          state.documents = [
+            ...documents,
+            ...externalDocuments.map(normalizeDocument),
+          ];
           elements.syncState.textContent = "已同步 GitHub";
         } catch (error) {
-          state.documents = fallbackDocuments.map(normalizeDocument);
+          state.documents = [
+            ...fallbackDocuments.map(normalizeDocument),
+            ...externalDocuments.map(normalizeDocument),
+          ];
           elements.syncState.textContent = "本地索引";
           console.warn("GitHub PDF index unavailable, using fallback data.", error);
         }
