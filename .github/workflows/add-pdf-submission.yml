@@ -1,0 +1,73 @@
+name: Add submitted PDF
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: pdf-submission-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  add-submission:
+    if: startsWith(github.event.issue.title, '[PDF提交]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Validate and add PDF
+        id: add
+        continue-on-error: true
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: node scripts/add-submitted-pdf.mjs
+
+      - name: Commit updated library
+        if: steps.add.outcome == 'success'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+
+          if git diff --cached --quiet; then
+            echo "PDF already exists in the library."
+            exit 0
+          fi
+
+          git commit -m "content: add submitted PDF link"
+          git push
+
+      - name: Comment success
+        if: steps.add.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue comment "$ISSUE_NUMBER" --body "已自动收录到资料库，刷新页面即可查看。"
+
+      - name: Close issue
+        if: steps.add.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue close "$ISSUE_NUMBER"
+
+      - name: Comment failure
+        if: steps.add.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue comment "$ISSUE_NUMBER" --body "自动收录失败，请确认链接可公开访问且返回 PDF 文件。"
+
+      - name: Fail job after failure comment
+        if: steps.add.outcome == 'failure'
+        run: exit 1

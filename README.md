@@ -31,3 +31,7 @@ Meetup 资料保留 `LLM Infra Meetup` 和 `RL Infra Meetup` 两个原有分类�
 ## 外部资料
 
 无需复制文件到本仓库。可以在 `index.html` 的 `externalDocuments` 中登记原始 PDF 地址，外部资料同样按主题标签筛选。
+
+## 提交 PDF
+
+页面右上角的“提交 PDF”按钮会创建预填 GitHub Issue。提交后，仓库 Action 会自动校验链接并写入资料索引。

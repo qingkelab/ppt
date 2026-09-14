@@ -161,6 +161,159 @@
         gap: 8px;
       }
 
+      .submission-button {
+        display: inline-flex;
+        min-height: 40px;
+        align-items: center;
+        gap: 8px;
+        padding: 0 14px;
+        border: 1px solid var(--accent);
+        border-radius: var(--radius);
+        color: #fff;
+        background: var(--accent);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+          border-color 160ms ease,
+          background 160ms ease,
+          transform 160ms ease;
+      }
+
+      .submission-button:hover {
+        border-color: var(--accent-strong);
+        background: var(--accent-strong);
+        transform: translateY(-1px);
+      }
+
+      .submission-button svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .submission-dialog {
+        width: min(560px, calc(100vw - 32px));
+        max-width: none;
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        color: var(--ink);
+        background: var(--surface);
+        box-shadow: 0 28px 90px rgb(12 21 17 / 30%);
+      }
+
+      .submission-dialog::backdrop {
+        background: rgb(16 24 21 / 66%);
+        backdrop-filter: blur(4px);
+      }
+
+      .submission-form {
+        padding: 24px;
+      }
+
+      .submission-title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 780;
+      }
+
+      .submission-copy {
+        margin: 8px 0 20px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .submission-field {
+        display: grid;
+        gap: 7px;
+        margin-top: 14px;
+        color: var(--ink);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .submission-field input {
+        width: 100%;
+        height: 44px;
+        padding: 0 12px;
+        border: 1px solid var(--line-strong);
+        border-radius: 6px;
+        color: var(--ink);
+        background: var(--surface-strong);
+        outline: none;
+      }
+
+      .submission-field input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgb(23 107 74 / 11%);
+      }
+
+      .submission-topics {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 0;
+        margin: 18px 0 0;
+        border: 0;
+      }
+
+      .submission-topics legend {
+        grid-column: 1 / -1;
+        margin-bottom: 2px;
+        color: var(--ink);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .submission-topic {
+        display: flex;
+        min-height: 42px;
+        align-items: center;
+        gap: 8px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #f4f1ea;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .submission-topic input {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--accent);
+      }
+
+      .submission-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 22px;
+      }
+
+      .submission-actions button {
+        min-height: 40px;
+        padding: 0 16px;
+        border-radius: var(--radius);
+        font-size: 12px;
+        font-weight: 750;
+        cursor: pointer;
+      }
+
+      .submission-cancel {
+        border: 1px solid var(--line-strong);
+        color: var(--ink);
+        background: var(--surface);
+      }
+
+      .submission-submit {
+        border: 1px solid var(--accent);
+        color: #fff;
+        background: var(--accent);
+      }
+
       .catalog-shell {
         width: min(100%, 1440px);
         margin: 0 auto;
@@ -703,11 +856,13 @@
         }
 
         .brand-subtitle,
-        .repository-link span {
+        .repository-link span,
+        .submission-button span {
           display: none;
         }
 
-        .repository-link {
+        .repository-link,
+        .submission-button {
           width: 40px;
           justify-content: center;
           padding: 0;
@@ -778,6 +933,10 @@
         .action-button {
           flex: 1;
         }
+
+        .submission-topics {
+          grid-template-columns: 1fr;
+        }
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -802,6 +961,21 @@
         </div>
       </div>
       <div class="header-actions">
+        <button class="submission-button" id="submission-button" type="button">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 5v14"></path>
+            <path d="M5 12h14"></path>
+          </svg>
+          <span>提交 PDF</span>
+        </button>
         <a
           class="repository-link"
           href="https://qingkelab.github.io/"
@@ -1036,6 +1210,66 @@
       </div>
     </dialog>
 
+    <dialog
+      class="submission-dialog"
+      id="submission-dialog"
+      aria-labelledby="submission-title"
+    >
+      <form class="submission-form" id="submission-form">
+        <h2 class="submission-title" id="submission-title">提交 PDF</h2>
+        <p class="submission-copy">提交后会自动校验链接并收录到资料库。</p>
+
+        <label class="submission-field">
+          <span>PDF 链接</span>
+          <input
+            id="submission-url"
+            type="url"
+            placeholder="https://example.com/document.pdf"
+            autocomplete="url"
+            required
+          />
+        </label>
+
+        <label class="submission-field">
+          <span>标题（可选）</span>
+          <input id="submission-title-input" type="text" autocomplete="off" />
+        </label>
+
+        <fieldset class="submission-topics">
+          <legend>技术主题</legend>
+          <label class="submission-topic">
+            <input type="checkbox" name="submission-topic" value="LLM Infra" />
+            <span>LLM Infra</span>
+          </label>
+          <label class="submission-topic">
+            <input
+              type="checkbox"
+              name="submission-topic"
+              value="Training &amp; Inference"
+            />
+            <span>Training &amp; Inference</span>
+          </label>
+          <label class="submission-topic">
+            <input type="checkbox" name="submission-topic" value="Agent" />
+            <span>Agent</span>
+          </label>
+          <label class="submission-topic">
+            <input
+              type="checkbox"
+              name="submission-topic"
+              value="Model Architecture"
+            />
+            <span>Model Architecture</span>
+          </label>
+        </fieldset>
+
+        <div class="submission-actions">
+          <button class="submission-cancel" id="submission-cancel" type="button">取消</button>
+          <button class="submission-submit" type="submit">提交收录</button>
+        </div>
+      </form>
+    </dialog>
+
     <script>
       const repository = "qingkelab/ppt";
       const apiUrl = `https://api.github.com/repos/${repository}/git/trees/main?recursive=1`;
@@ -1212,6 +1446,12 @@
         openButton: document.querySelector("#open-button"),
         downloadButton: document.querySelector("#download-button"),
         closeButton: document.querySelector("#close-button"),
+        submissionButton: document.querySelector("#submission-button"),
+        submissionDialog: document.querySelector("#submission-dialog"),
+        submissionForm: document.querySelector("#submission-form"),
+        submissionUrl: document.querySelector("#submission-url"),
+        submissionTitle: document.querySelector("#submission-title-input"),
+        submissionCancel: document.querySelector("#submission-cancel"),
       };
 
       function pathForBrowser(path) {
@@ -1509,6 +1749,70 @@
         const url = new URL(window.location.href);
         url.searchParams.delete("file");
         history.replaceState(null, "", url);
+      });
+
+      elements.submissionButton.addEventListener("click", () => {
+        elements.submissionDialog.showModal();
+      });
+
+      elements.submissionCancel.addEventListener("click", () => {
+        elements.submissionDialog.close();
+      });
+
+      elements.submissionDialog.addEventListener("click", (event) => {
+        if (event.target === elements.submissionDialog) {
+          elements.submissionDialog.close();
+        }
+      });
+
+      elements.submissionUrl.addEventListener("input", () => {
+        elements.submissionUrl.setCustomValidity("");
+      });
+
+      elements.submissionForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        let submittedUrl;
+        try {
+          submittedUrl = new URL(elements.submissionUrl.value.trim());
+        } catch {
+          elements.submissionUrl.setCustomValidity("请输入有效的 PDF 链接");
+          elements.submissionUrl.reportValidity();
+          return;
+        }
+
+        if (!["http:", "https:"].includes(submittedUrl.protocol)) {
+          elements.submissionUrl.setCustomValidity("仅支持 http 或 https 链接");
+          elements.submissionUrl.reportValidity();
+          return;
+        }
+
+        const title = elements.submissionTitle.value.trim();
+        const topics = Array.from(
+          elements.submissionForm.querySelectorAll(
+            'input[name="submission-topic"]:checked',
+          ),
+        ).map((input) => input.value);
+        const body = [
+          "### PDF 链接",
+          submittedUrl.toString(),
+          "",
+          "### 标题",
+          title || "未填写",
+          "",
+          "### 技术主题",
+          topics.length
+            ? topics.map((topic) => `- [x] ${topic}`).join("\n")
+            : "- [ ] 未选择",
+        ].join("\n");
+        const issueTitle = `[PDF提交] ${title || "新的 PDF 资料"}`;
+        const issueUrl =
+          `https://github.com/${repository}/issues/new?title=` +
+          `${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(body)}`;
+
+        window.open(issueUrl, "_blank", "noopener,noreferrer");
+        elements.submissionForm.reset();
+        elements.submissionDialog.close();
       });
 
       loadDocuments();
